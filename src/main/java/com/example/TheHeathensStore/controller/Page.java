@@ -9,6 +9,10 @@ public class Page {
 	public String about() {
 		return "about";
 	}
+	@RequestMapping("/login")
+	public String login() {
+		return "auth/login";
+	}
 	@RequestMapping("/cart")
 	public String cart() {
 		return "cart";

@@ -57,8 +57,4 @@ jar {
 tasks.named('test') {
 	useJUnitPlatform()
 }
-tasks.register('syncAssets', Copy) {
-    from 'src/main/resources/templates/assets'
-    into 'src/main/resources/static/assets'
-}
 

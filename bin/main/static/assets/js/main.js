@@ -1,4 +1,7 @@
-
+if (window.location.origin.includes("localhost")) {
+   const base = document.querySelector("base");
+   if (base) base.remove();
+ }
 (function ($) {
     "use strict";
 
