@@ -1,29 +1,24 @@
 package com.example.TheHeathensStore.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "users")
 public class User {
+
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
 	private long id;
 
-	@Column(name = "username")
+	@Column(name = "username", nullable = false, unique = true)
 	private String username;
 
-	@Column(name = "hashed_password")
+	@Column(name = "password_hash", nullable = false)
 	private String hashedPassword;
 
-	@Column(name = "email")
+	@Column(name = "email", unique = true)
 	private String email;
-
-//	@OneToOne(fetch = FetchType.LAZY)
-//	@JoinColumn(name = "id", referencedColumnName = "userinfo_id")
-//	private UserInfo userInfo;
 
 	public long getId() {
 		return id;
@@ -56,13 +51,4 @@ public class User {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-
-//	public UserInfo getUserInfo() {
-//		return userInfo;
-//	}
-//
-//	public void setUserInfo(UserInfo userInfo) {
-//		this.userInfo = userInfo;
-//	}
-
 }
