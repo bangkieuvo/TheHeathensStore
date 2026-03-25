@@ -78,6 +78,8 @@
 
 /*//////////////////////////////////////////////////////////////////
 [ LOADDING ]*/
+ /* Ghi đè để hiện trang ngay lập tức */
+
 .animsition-loading-1 {
   position: absolute;
   top: 50%;
@@ -191,7 +193,7 @@
 .left-top-bar {
   font-family: Poppins-Regular;
   font-size: 12px;
-  line-height: 1.8;
+  line-height: 1.8  ;
   color: #b2b2b2;
 }
 

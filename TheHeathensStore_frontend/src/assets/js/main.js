@@ -1,7 +1,4 @@
-if (window.location.origin.includes("localhost")) {
-   const base = document.querySelector("base");
-   if (base) base.remove();
- }
+import '../vendor/jquery/jquery-3.2.1.min.js'
 (function ($) {
     "use strict";
 
