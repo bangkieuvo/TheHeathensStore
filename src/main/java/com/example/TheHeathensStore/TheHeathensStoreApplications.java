@@ -1,22 +1,15 @@
- package com.example.TheHeathensStore;
+package com.example.TheHeathensStore;
 
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ApplicationContext;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 
+import com.example.TheHeathensStore.config.EnviromentConfig;
 
 @SpringBootApplication
 public class TheHeathensStoreApplications {
 	public static void main(String[] args) {
-		ApplicationContext context = SpringApplication.run(TheHeathensStoreApplications.class, args);
-//
-//		String s = context.getBean("productDAO",ProductDAO.class).get(4).getDescription();
-//		try {
-//			Output.write(s);
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-
+		SpringApplicationBuilder application = new SpringApplicationBuilder(TheHeathensStoreApplications.class);
+		application.initializers(new EnviromentConfig());
+		application.run(args);
 	}
 }

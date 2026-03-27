@@ -1,0 +1,35 @@
+# --- Java / Gradle (Spring Boot) ---
+.gradle/
+build/
+bin/
+!gradle/wrapper/gradle-wrapper.jar
+out/
+.logs/
+*.log
+
+# --- Database & Secrets (RẤT QUAN TRỌNG) ---
+.env
+.env.local
+application-local.properties
+
+# --- Node / React (Frontend) ---
+node_modules/
+dist/
+build-frontend/
+.eslintcache
+.stylelintcache
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# --- IDE (IntelliJ / VS Code) ---
+.idea/
+*.iml
+*.iws
+.vscode/
+.settings/
+.classpath
+.project
+.factorypath
+.DS_Store
