@@ -43,6 +43,10 @@ dependencies {
 //	testImplementation 'org.junit.jupiter:junit-jupiter'
 //	testImplementation 'org.springframework.security:spring-security-test'
 //	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+
+	// Cloudinary SDK
+    implementation 'com.cloudinary:cloudinary-http44:1.36.0'
 }
 jar {
     manifest {
