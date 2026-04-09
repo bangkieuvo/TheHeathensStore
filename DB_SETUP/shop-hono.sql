@@ -13,6 +13,7 @@ DROP TABLE IF EXISTS seasons;
 DROP TABLE IF EXISTS leagues;
 DROP TABLE IF EXISTS teams;
 DROP TABLE IF EXISTS nations;
+drop table if Exists product_images;
 SET FOREIGN_KEY_CHECKS = 1;
 
 
@@ -79,7 +80,18 @@ CREATE TABLE products (
     INDEX idx_products_season_id (season_id),
     INDEX idx_products_league_id (league_id)
 );
-
+CREATE TABLE product_images (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    product_id BIGINT NOT NULL,
+    image_url VARCHAR(255) NOT NULL,
+    is_thumbnail BOOLEAN DEFAULT FALSE, -- Ảnh đại diện chính
+    
+    FOREIGN KEY (product_id) 
+        REFERENCES products(id) 
+        ON DELETE CASCADE,
+    
+    INDEX idx_images_product (product_id)
+);
 
 -- USERS
 CREATE TABLE users (
