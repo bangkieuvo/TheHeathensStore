@@ -1,61 +1,40 @@
 package com.example.TheHeathensStore.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
 
 @Entity
-@Table(
-    name = "cart_items"
-)
+@Table(name = "cart_items")
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class CartItem {
-    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id; 
+    private Long id;
+
     @Column(name = "user_id", nullable = false)
-    private long userId;
-    @Column(name = "quantity", nullable = false)
-    private long quantity;
-    @ManyToOne
-    @JoinColumn(name = "product_id", nullable = false)
+    private Long userId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id")
     private Product product;
 
-    public CartItem() {}
+    @Column(nullable = false)
+    private Long quantity;
 
-    public CartItem(long userId, long quantity, Product product) {
-        this.userId = userId;
-        this.quantity = quantity;
-        this.product = product;
-    }
+    private BigDecimal subTotal;
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(long userId) {
-        this.userId = userId;
-    }
-
-    public long getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(long quantity) {
-        this.quantity = quantity;
-    }
-
-    public Product getProduct() {
-        return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
+    @Transient
+    public BigDecimal getSubTotal() {
+        return this.getProduct()
+                   .getPrice()
+                   .multiply(BigDecimal.valueOf(this.getQuantity()));
     }
 }

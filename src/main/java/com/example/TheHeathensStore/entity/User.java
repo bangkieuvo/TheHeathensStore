@@ -1,26 +1,58 @@
 package com.example.TheHeathensStore.entity;
 
+import com.github.f4b6a3.uuid.UuidCreator;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.sql.Types;
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
+@Table(name = "users")
 @Getter
 @Setter
-@Table(name = "users")
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class User {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id")
-	private long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	@Column(name = "username", nullable = false, unique = true)
-	private String username;
+    @JdbcTypeCode(Types.BINARY)
+    @Column(columnDefinition = "BINARY(16)", nullable = false, unique = true, updatable = false)
+    private UUID uuid;
 
-	@Column(name = "password_hash", nullable = false)
-	private String hashedPassword;
+    @Column(length = 50, nullable = false, unique = true)
+    private String username;
 
-	@Column(name = "email", unique = true)
-	private String email;
+    @Column(name = "password_hash", nullable = false)
+    private String passwordHash;
+
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    @Builder.Default
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive = true;
+
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        if (this.uuid == null) {
+            this.uuid = UuidCreator.getTimeOrderedEpoch();
+        }
+    }
 }

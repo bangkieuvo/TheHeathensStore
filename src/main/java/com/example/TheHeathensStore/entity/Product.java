@@ -1,90 +1,69 @@
 package com.example.TheHeathensStore.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.UuidGenerator;
+import org.hibernate.annotations.UuidGenerator.*;
 
+import java.math.BigDecimal;
+import java.sql.Types;
+import java.util.UUID;
 
 @Entity
 @Table(name = "products")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Product {
-
+	public enum JerseyType {
+		home,
+		away,
+		third,
+		home_gk,
+		away_gk,
+		third_gk
+	}
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id")
-	private long id;
+	private Long id;
 
-	@Column(name = "name", nullable = false)
+    @JdbcTypeCode(Types.BINARY)
+	@Column(columnDefinition = "BINARY(16)", nullable = false, unique = true)
+	private UUID uuid;
+
+	@Column(nullable = false)
 	private String name;
 
-	@Column(name = "price", nullable = false)
-	private double price;
+	@Column(nullable = false, precision = 10, scale = 2)
+	private BigDecimal price;
 
-	@Column(name = "stock", nullable = false)
-	private int stock;
+	@Column(nullable = false)
+	private Long stock;
 
-	@Column(name = "category_id", nullable = false)
-	private long categoryId;
-
-	@Column(name = "description")
+	@Column(columnDefinition = "TEXT")
 	private String description;
 
-	// Constructors
-	public Product() {
-	}
+	@Enumerated(EnumType.STRING)
+	@Column(name = "jersey_type", nullable = false)
+	private JerseyType jerseyType;
 
-	public Product(String name, double price, int stock, long categoryId, String description) {
-		this.name = name;
-		this.price = price;
-		this.stock = stock;
-		this.categoryId = categoryId;
-		this.description = description;
-	}
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "team_id")
+	private Team team;
 
-	// Getters & Setters
-	public long getId() {
-		return id;
-	}
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "season_id")
+	private Season season;
 
-	public void setId(long id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public double getPrice() {
-		return price;
-	}
-
-	public void setPrice(double price) {
-		this.price = price;
-	}
-
-	public int getStock() {
-		return stock;
-	}
-
-	public void setStock(int stock) {
-		this.stock = stock;
-	}
-
-	public long getCategoryId() {
-		return categoryId;
-	}
-
-	public void setCategoryId(long categoryId) {
-		this.categoryId = categoryId;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
+    @Column
+    private boolean isActive;
+	@PrePersist
+	protected void onCreate() {
+		if (this.uuid == null) {
+			this.uuid = UUID.randomUUID();
+		}
 	}
 }
