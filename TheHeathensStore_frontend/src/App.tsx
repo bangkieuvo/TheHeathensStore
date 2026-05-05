@@ -3,6 +3,7 @@ import './App.css';
 //import Header from './components/Header/Header2_copy';
 
 import CartPanel from './components/Header/components/CartPanel'
+
 function App() {
   const [isCartOpen, setIsCartOpen] = useState(true);
   useEffect(() => {

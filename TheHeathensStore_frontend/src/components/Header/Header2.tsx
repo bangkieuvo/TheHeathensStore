@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 // @ts-ignore
 import logo from '../../assets/images/icons/logo.png';
 // @ts-ignore
