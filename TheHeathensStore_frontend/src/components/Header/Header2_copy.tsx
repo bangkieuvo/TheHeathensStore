@@ -1,7 +1,5 @@
-import React, { useState, useEffect } from 'react';
-// @ts-ignore
+import{ useState, useEffect } from 'react';
 import logo from '../../assets/images/icons/logo.png';
-// @ts-ignore
 import iconClose from '../../assets/images/icons/icon-close2.png';
 
 const Header = () => {

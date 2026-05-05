@@ -17,7 +17,6 @@ const CartPanel: React.FC<CartPanelProps> = ({isCartOpen, setIsCartOpen}) => {
                 const userUuid = "019da99e-dd5e-7ba2-9b93-2534968811dc";
                 const response = await getCartByUserUuid(userUuid);
                 setCart(response);
-                console.log(response)
             } catch (error) {
                 console.log("Lỗi khi lấy dữ liệu giỏ hàng:", error);
             }

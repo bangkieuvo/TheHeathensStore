@@ -1,28 +1,25 @@
-import { useState, useEffect } from 'react';
 import './App.css';
-//import Header from './components/Header/Header2_copy';
+import Header from "./components/Header/Header.tsx";
 
-import CartPanel from './components/Header/components/CartPanel'
+import {BrowserRouter, Route, Routes} from "react-router-dom";
+import Index from "./components/Index/Index.tsx";
+
+
+
 
 function App() {
-  const [isCartOpen, setIsCartOpen] = useState(true);
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') { // 27 là mã phím Es
-        setIsCartOpen(false);
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, []);
-  return (
-    <>
-      <CartPanel isCartOpen = {isCartOpen} setIsCartOpen={setIsCartOpen} />
-    </>
-  )
+    return (
+        <>
+            <BrowserRouter>
+                <Header/>
+                <main className="App">
+                    <Routes>
+                        <Route path="/index" element={<Index/>}  />
+                    </Routes>
+                </main>
+            </BrowserRouter>
+        </>
+    )
 }
 
 export default App

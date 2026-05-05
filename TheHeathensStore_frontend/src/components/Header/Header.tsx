@@ -1,30 +1,38 @@
-import React, { useState, useEffect } from 'react';
-// @ts-ignore
-import logo from '../../assets/images/icons/logo.png';
-// @ts-ignore
-import iconClose from '../../assets/images/icons/icon-close2.png';
+import {useState, useEffect} from 'react';
+
 
 import MenuDesktop from './components/MenuDesktop'
+import CartPanel from "./components/CartPanel.tsx";
+import FavoritePanel from "./components/FavoritePanel.tsx";
+import ModalSearch from "./components/ModalSearch.tsx";
+
 const Header = () => {
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isCartOpen, setIsCartOpen] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [isFavoriteOpen, setIsFavoriteOpen] = useState(false);
-    const [isSubMenuOpen, setIsSubMenuOpen] = useState(false);
-
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') { // 27 là mã phím Es
+                setIsCartOpen(false);
+                setIsFavoriteOpen(false);
+                setIsSearchOpen(false);
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, []);
     return (
         <>
             <header className="header-v4">
-                <MenuDesktop
-                    onOpenSearch={() => setIsSearchOpen(true)}
-                    onOpenCart={() => setIsCartOpen(true)}
-                />
+                <MenuDesktop setIsCartOpen={setIsCartOpen}
+                             setIsFavoriteOpen={setIsFavoriteOpen}
+                             setIsSearchOpen={setIsSearchOpen}/>
+                <CartPanel isCartOpen={isCartOpen} setIsCartOpen={setIsCartOpen}/>
+                <FavoritePanel isFavoriteOpen={isFavoriteOpen} setIsFavoriteOpen={setIsFavoriteOpen}/>
+                <ModalSearch isSearchOpen={isSearchOpen} setIsSearchOpen={setIsSearchOpen}/>
             </header>
-
-            {/* Các thành phần bổ trợ được tách riêng */}
-            <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
-            <CartPanel isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
-            <FavoritePanel isOpen={isFavoriteOpen} onClose={() => setIsFavoriteOpen(false)} />
         </>
     );
 };
