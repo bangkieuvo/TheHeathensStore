@@ -1,25 +1,32 @@
 import './App.css';
-import Header from "./components/Header/Header.tsx";
-
 import {BrowserRouter, Route, Routes} from "react-router-dom";
-import Index from "./components/Index/Index.tsx";
+import MainLayout from "./page/layout/MainLayout.tsx";
+import About from "./page/About.tsx";
+import Login from "./page/Login.tsx";
+import Register from "./page/Register.tsx";
+import AuthLayout from "./page/layout/AuthLayout.tsx";
+import Home from "./page/Home.tsx";
 
 
-
-
-function App() {
+const App = () => {
     return (
         <>
             <BrowserRouter>
-                <Header/>
-                <main className="App">
-                    <Routes>
-                        <Route path="/index" element={<Index/>}  />
-                    </Routes>
-                </main>
+                <Routes>
+                    <Route path="/" element={<AuthLayout/>}>
+                        <Route path="login" element={<Login/>}/>
+                        <Route path="register" element={<Register/>}/>
+                    </Route>
+                    <Route path="/" element={<MainLayout/>}>
+                        <Route index element={<Home/>}/>
+                        <Route path="about" element={<About/>}/>
+                    </Route>
+
+                </Routes>
             </BrowserRouter>
         </>
     )
-}
+};
 
-export default App
+
+export default App;

@@ -561,7 +561,7 @@ MagnificPopup.prototype = {
 
 	/**
 	 * Creates Magnific Popup data object based on given data
-	 * @param  {int} index Index of item to parse
+	 * @param  {int} index About of item to parse
 	 */
 	parseEl: function(index) {
 		var item = mfp.items[index],

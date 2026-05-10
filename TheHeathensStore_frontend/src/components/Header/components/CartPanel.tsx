@@ -21,7 +21,6 @@ const CartPanel: React.FC<CartPanelProps> = ({isCartOpen, setIsCartOpen}) => {
                 console.log("Lỗi khi lấy dữ liệu giỏ hàng:", error);
             }
         };
-
         fetchCartData();
     }, []);
     return (

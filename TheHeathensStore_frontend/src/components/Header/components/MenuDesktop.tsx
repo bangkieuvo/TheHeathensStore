@@ -5,7 +5,8 @@ interface MenuDesktopProps {
     setIsFavoriteOpen: (flag: boolean) => void;
     setIsSearchOpen: (flag: boolean) => void;
 }
-const MenuDesktop:React.FC<MenuDesktopProps> = ({setIsCartOpen,setIsFavoriteOpen,setIsSearchOpen}) => {
+
+const MenuDesktop: React.FC<MenuDesktopProps> = ({setIsCartOpen, setIsFavoriteOpen, setIsSearchOpen}) => {
     return (
         <>
             {/* Header desktop */}

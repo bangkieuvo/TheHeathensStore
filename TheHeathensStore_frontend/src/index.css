@@ -20,5 +20,9 @@ html, body, #root {
     margin: 0 !important;
     padding: 0 !important;
 }
+/* Tính scrollbar width tự động bằng CSS */
+:root {
+    --scrollbar-width: calc(100vw - 100%);
+}
 
 /* 3. Ép Container về đúng kích thước của ảnh Inspect (1200px) */

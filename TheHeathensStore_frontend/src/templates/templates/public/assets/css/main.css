@@ -158,13 +158,16 @@
 [ Header Desktop ]*/
 
 .container-menu-desktop {
-  height: auto;
-  width: 100%;
-  position: relative;
-  -webkit-transition: all 0.3s;
-  -o-transition: all 0.3s;
-  -moz-transition: all 0.3s;
-  transition: all 0.3s;
+    height: auto;
+    width: 100%; /* Hỗ trợ Safari */
+    position: sticky;        /* Đưa cả khối ngoài cùng thành sticky */
+    top: 0;                  /* Dính sát lên mép màn hình */
+    z-index: 1100;           /* Đảm bảo đè lên nội dung trang web khi cuộn */
+    background-color: #fff;  /* Tạo nền trắng để không bị lộ text bên dưới khi cuộn */
+    -webkit-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    transition: all 0.3s;
 }
 
 .header-v2 .container-menu-desktop {
