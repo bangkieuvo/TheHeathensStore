@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { HomeProduct } from './HomeProductCard';
 
 type HomeQuickViewModalProps = {
@@ -8,6 +8,17 @@ type HomeQuickViewModalProps = {
 };
 
 const HomeQuickViewModal = ({ isOpen, product, onClose }: HomeQuickViewModalProps) => {
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
+
+  const sliderImages = useMemo(
+    () => [
+      product?.image ?? '/assets/images/product-detail-01.jpg',
+      '/assets/images/product-detail-02.jpg',
+      '/assets/images/product-detail-03.jpg',
+    ],
+    [product?.image],
+  );
+
   useEffect(() => {
     if (!isOpen) {
       return;
@@ -23,6 +34,18 @@ const HomeQuickViewModal = ({ isOpen, product, onClose }: HomeQuickViewModalProp
     return () => window.removeEventListener('keydown', handleEscape);
   }, [isOpen, onClose]);
 
+  useEffect(() => {
+    setActiveImageIndex(0);
+  }, [product?.id, isOpen]);
+
+  const showPreviousImage = () => {
+    setActiveImageIndex((current) => (current === 0 ? sliderImages.length - 1 : current - 1));
+  };
+
+  const showNextImage = () => {
+    setActiveImageIndex((current) => (current === sliderImages.length - 1 ? 0 : current + 1));
+  };
+
   return (
     <div className={`wrap-modal1 js-modal1 p-t-60 p-b-20 ${isOpen ? 'show-modal1' : ''}`}>
       <div className="overlay-modal1 js-hide-modal1" onClick={onClose}></div>
@@ -37,48 +60,35 @@ const HomeQuickViewModal = ({ isOpen, product, onClose }: HomeQuickViewModalProp
             <div className="col-md-6 col-lg-7 p-b-30">
               <div className="p-l-25 p-r-30 p-lr-0-lg">
                 <div className="wrap-slick3 flex-sb flex-w">
-                  <div className="wrap-slick3-dots"></div>
-                  <div className="wrap-slick3-arrows flex-sb-m flex-w"></div>
+                  <div className="quickview-slider gallery-lb">
+                    <button
+                      className="quickview-slider-btn quickview-slider-btn-prev flex-c-m"
+                      type="button"
+                      onClick={showPreviousImage}
+                      aria-label="Previous image"
+                    >
+                      <i className="zmdi zmdi-chevron-left"></i>
+                    </button>
 
-                  <div className="slick3 gallery-lb">
-                    <div className="item-slick3" data-thumb="/assets/images/product-detail-01.jpg">
-                      <div className="wrap-pic-w pos-relative">
-                        <img src={product?.image ?? '/assets/images/product-detail-01.jpg'} alt="IMG-PRODUCT" />
-
-                        <a
-                          className="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04"
-                          href="/assets/images/product-detail-01.jpg"
-                        >
-                          <i className="fa fa-expand"></i>
-                        </a>
-                      </div>
+                    <div className="quickview-slider-frame">
+                      <img src={sliderImages[activeImageIndex]} alt="IMG-PRODUCT" />
                     </div>
 
-                    <div className="item-slick3" data-thumb="/assets/images/product-detail-02.jpg">
-                      <div className="wrap-pic-w pos-relative">
-                        <img src="/assets/images/product-detail-02.jpg" alt="IMG-PRODUCT" />
+                    <button
+                      className="quickview-slider-btn quickview-slider-btn-next flex-c-m"
+                      type="button"
+                      onClick={showNextImage}
+                      aria-label="Next image"
+                    >
+                      <i className="zmdi zmdi-chevron-right"></i>
+                    </button>
 
-                        <a
-                          className="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04"
-                          href="/assets/images/product-detail-02.jpg"
-                        >
-                          <i className="fa fa-expand"></i>
-                        </a>
-                      </div>
-                    </div>
-
-                    <div className="item-slick3" data-thumb="/assets/images/product-detail-03.jpg">
-                      <div className="wrap-pic-w pos-relative">
-                        <img src="/assets/images/product-detail-03.jpg" alt="IMG-PRODUCT" />
-
-                        <a
-                          className="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04"
-                          href="/assets/images/product-detail-03.jpg"
-                        >
-                          <i className="fa fa-expand"></i>
-                        </a>
-                      </div>
-                    </div>
+                    <a
+                      className="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04"
+                      href={sliderImages[activeImageIndex]}
+                    >
+                      <i className="fa fa-expand"></i>
+                    </a>
                   </div>
                 </div>
               </div>
