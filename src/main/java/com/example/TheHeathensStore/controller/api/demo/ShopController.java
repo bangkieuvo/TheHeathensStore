@@ -1,5 +1,6 @@
 package com.example.TheHeathensStore.controller.api.demo;
 
+import com.example.TheHeathensStore.dto.response.ProductResponse;
 import com.example.TheHeathensStore.dto.response.ProductResponseMin;
 import com.example.TheHeathensStore.repository.ProductRepository;
 import com.example.TheHeathensStore.service.ProductService;
@@ -21,11 +22,11 @@ public class ShopController {
     private final ShopService shopService;
 
     @RequestMapping({"","/"})
-    public Page<ProductResponseMin> getshop(){
+    public Page<ProductResponse> getshop(){
         return shopService.getShop(0);
     }
     @RequestMapping("/{pageNumber}")
-    public Page<ProductResponseMin> geShop(@PathVariable("pageNumber")int pageNumber){
+    public Page<ProductResponse> geShop(@PathVariable("pageNumber")int pageNumber){
         return shopService.getShop(pageNumber-1);
     }
 }

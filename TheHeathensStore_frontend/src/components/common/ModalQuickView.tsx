@@ -1,23 +1,41 @@
 import { useEffect, useMemo, useState } from 'react';
-import type { HomeProduct } from './HomeProductCard';
+import type { Product } from '../../types/product';
 
 type HomeQuickViewModalProps = {
   isOpen: boolean;
-  product: HomeProduct | null;
+  product: Product | null;
   onClose: () => void;
 };
 
-const HomeQuickViewModal = ({ isOpen, product, onClose }: HomeQuickViewModalProps) => {
+const fallbackImages = [
+  '/assets/images/product-detail-01.jpg',
+  '/assets/images/product-detail-02.jpg',
+  '/assets/images/product-detail-03.jpg',
+];
+
+const formatPrice = (price: number) =>
+  new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  }).format(price);
+
+const ModalQuickView = ({ isOpen, product, onClose }: HomeQuickViewModalProps) => {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
 
-  const sliderImages = useMemo(
-    () => [
-      product?.image ?? '/assets/images/product-detail-01.jpg',
-      '/assets/images/product-detail-02.jpg',
-      '/assets/images/product-detail-03.jpg',
-    ],
-    [product?.image],
-  );
+  const sliderImages = useMemo(() => {
+    if (!product) {
+      return fallbackImages;
+    }
+    const productImages:string[] = [];
+    if (product.thumbnail != null) {
+        productImages.push(product.thumbnail.url)
+    }
+    product.images.forEach(image => {
+        productImages.push(image.url);
+    })
+
+    return productImages.length > 0 ? productImages : fallbackImages;
+  }, [product]);
 
   useEffect(() => {
     if (!isOpen) {
@@ -34,9 +52,7 @@ const HomeQuickViewModal = ({ isOpen, product, onClose }: HomeQuickViewModalProp
     return () => window.removeEventListener('keydown', handleEscape);
   }, [isOpen, onClose]);
 
-  useEffect(() => {
-    setActiveImageIndex(0);
-  }, [product?.id, isOpen]);
+  const visibleImageIndex = Math.min(activeImageIndex, sliderImages.length - 1);
 
   const showPreviousImage = () => {
     setActiveImageIndex((current) => (current === 0 ? sliderImages.length - 1 : current - 1));
@@ -71,7 +87,7 @@ const HomeQuickViewModal = ({ isOpen, product, onClose }: HomeQuickViewModalProp
                     </button>
 
                     <div className="quickview-slider-frame">
-                      <img src={sliderImages[activeImageIndex]} alt="IMG-PRODUCT" />
+                      <img src={sliderImages[visibleImageIndex]} alt={product?.name ?? 'IMG-PRODUCT'} />
                     </div>
 
                     <button
@@ -84,8 +100,8 @@ const HomeQuickViewModal = ({ isOpen, product, onClose }: HomeQuickViewModalProp
                     </button>
 
                     <a
-                      className="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04"
-                      href={sliderImages[activeImageIndex]}
+                      className="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04" target="_blank"
+                      href={sliderImages[visibleImageIndex]}
                     >
                       <i className="fa fa-expand"></i>
                     </a>
@@ -96,13 +112,19 @@ const HomeQuickViewModal = ({ isOpen, product, onClose }: HomeQuickViewModalProp
 
             <div className="col-md-6 col-lg-5 p-b-30">
               <div className="p-r-50 p-t-5 p-lr-0-lg">
-                <h4 className="mtext-105 cl2 js-name-detail p-b-14">{product?.name ?? 'Lightweight Jacket'}</h4>
+                <h4 className="mtext-105 cl2 js-name-detail p-b-14">{product?.name ?? 'Product detail'}</h4>
 
-                <span className="mtext-106 cl2">{product?.price ?? '$58.79'}</span>
+                <span className="mtext-106 cl2">{product ? formatPrice(product.price) : '$0.00'}</span>
 
                 <p className="stext-102 cl3 p-t-23">
-                  Nulla eget sem vitae eros pharetra viverra. Nam vitae luctus ligula. Mauris consequat ornare feugiat.
+                  {product?.description ?? 'Select a product to preview details.'}
                 </p>
+
+                {product && (
+                  <div className="stext-102 cl3 p-t-10">
+                    {product.teamName} / {product.season} / Stock: {product.stock}
+                  </div>
+                )}
 
                 <div className="p-t-33">
                   <div className="flex-w flex-r-m p-b-10">
@@ -209,5 +231,5 @@ const HomeQuickViewModal = ({ isOpen, product, onClose }: HomeQuickViewModalProp
   );
 };
 
-export default HomeQuickViewModal;
+export default ModalQuickView;
 

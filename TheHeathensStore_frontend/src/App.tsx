@@ -6,6 +6,7 @@ import Login from "./page/Login.tsx";
 import Register from "./page/Register.tsx";
 import AuthLayout from "./page/layout/AuthLayout.tsx";
 import Home from "./page/Home.tsx";
+import ProductDetail from "./page/ProductDetail.tsx";
 
 
 const App = () => {
@@ -19,6 +20,7 @@ const App = () => {
                     </Route>
                     <Route path="/" element={<MainLayout/>}>
                         <Route index element={<Home/>}/>
+                        <Route path="product-detail/:uuid" element={<ProductDetail/>}/>
                         <Route path="about" element={<About/>}/>
                     </Route>
 

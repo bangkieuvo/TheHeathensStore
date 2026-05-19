@@ -118,15 +118,17 @@
 .btn-back-to-top {
   display: none;
   position: fixed;
-  width: 40px;
-  height: 38px;
-  bottom: 0px;
-  right: 40px;
+  width: 56px;
+  height: 54px;
+  bottom: 30px;
+  right: 36px;
+  border: 0;
+  padding: 0;
   background-color: #717fe0;
-  opacity: 0.5;
+  opacity: 0.75;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 99999;
   cursor: pointer;
   transition: all 0.4s;
   -webkit-transition: all 0.4s;
@@ -135,7 +137,7 @@
 }
 
 .symbol-btn-back-to-top {
-  font-size: 25px;
+  font-size: 34px;
   color: white;
   line-height: 1em;
 }
@@ -147,7 +149,9 @@
 
 @media (max-width: 575px) {
   .btn-back-to-top {
-    bottom: 0px;
+    width: 50px;
+    height: 48px;
+    bottom: 20px;
     right: 15px;
   }
 }
