@@ -1,0 +1,231 @@
+import { useEffect, useMemo, useState } from 'react';
+import type { Product } from '../../types/product';
+import {NO_IMAGE_AVAILABLE_URL} from "../../util/constants.ts";
+
+type HomeQuickViewModalProps = {
+  isOpen: boolean;
+  product: Product | null;
+  onClose: () => void;
+};
+
+const formatPrice = (price: number) =>
+  new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  }).format(price);
+
+const ModalQuickView = ({ isOpen, product, onClose }: HomeQuickViewModalProps) => {
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
+
+  const sliderImages = useMemo(() => {
+    if (!product) {
+      return [NO_IMAGE_AVAILABLE_URL];
+    }
+    const productImages = [
+      product.thumbnail?.url,
+      ...product.images.map((image) => image.url),
+    ].filter((image): image is string => Boolean(image?.trim()));
+
+    return productImages.length > 0 ? productImages : [NO_IMAGE_AVAILABLE_URL];
+  }, [product]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    window.addEventListener('keydown', handleEscape);
+    return () => window.removeEventListener('keydown', handleEscape);
+  }, [isOpen, onClose]);
+
+  const visibleImageIndex = Math.min(activeImageIndex, sliderImages.length - 1);
+
+  const showPreviousImage = () => {
+    setActiveImageIndex((current) => (current === 0 ? sliderImages.length - 1 : current - 1));
+  };
+
+  const showNextImage = () => {
+    setActiveImageIndex((current) => (current === sliderImages.length - 1 ? 0 : current + 1));
+  };
+
+  return (
+    <div className={`wrap-modal1 js-modal1 p-t-60 p-b-20 ${isOpen ? 'show-modal1' : ''}`}>
+      <div className="overlay-modal1 js-hide-modal1" onClick={onClose}></div>
+
+      <div className="container">
+        <div className="bg0 p-t-60 p-b-30 p-lr-15-lg how-pos3-parent">
+          <button className="how-pos3 hov3 trans-04 js-hide-modal1" type="button" onClick={onClose}>
+            <img src="/assets/images/icons/icon-close.png" alt="CLOSE" />
+          </button>
+
+          <div className="row">
+            <div className="col-md-6 col-lg-7 p-b-30">
+              <div className="p-l-25 p-r-30 p-lr-0-lg">
+                <div className="wrap-slick3 flex-sb flex-w">
+                  <div className="quickview-slider gallery-lb">
+                    {sliderImages.length > 1 && (
+                      <button
+                        className="quickview-slider-btn quickview-slider-btn-prev flex-c-m"
+                        type="button"
+                        onClick={showPreviousImage}
+                        aria-label="Previous image"
+                      >
+                        <i className="zmdi zmdi-chevron-left"></i>
+                      </button>
+                    )}
+
+                    <div className="quickview-slider-frame">
+                      <img src={sliderImages[visibleImageIndex]} alt={product?.name ?? 'IMG-PRODUCT'} />
+                    </div>
+
+                    {sliderImages.length > 1 && (
+                      <button
+                        className="quickview-slider-btn quickview-slider-btn-next flex-c-m"
+                        type="button"
+                        onClick={showNextImage}
+                        aria-label="Next image"
+                      >
+                        <i className="zmdi zmdi-chevron-right"></i>
+                      </button>
+                    )}
+
+                    <a
+                      className="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04" target="_blank"
+                      href={sliderImages[visibleImageIndex]}
+                    >
+                      <i className="fa fa-expand"></i>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="col-md-6 col-lg-5 p-b-30">
+              <div className="p-r-50 p-t-5 p-lr-0-lg">
+                <h4 className="mtext-105 cl2 js-name-detail p-b-14">{product?.name ?? 'Product detail'}</h4>
+
+                <span className="mtext-106 cl2">{product ? formatPrice(product.price) : '$0.00'}</span>
+
+                <p className="stext-102 cl3 p-t-23">
+                  {product?.description ?? 'Select a product to preview details.'}
+                </p>
+
+                {product && (
+                  <div className="stext-102 cl3 p-t-10">
+                    {product.teamName} / {product.season} / Stock: {product.stock}
+                  </div>
+                )}
+
+                <div className="p-t-33">
+                  <div className="flex-w flex-r-m p-b-10">
+                    <div className="size-203 flex-c-m respon6">Size</div>
+
+                    <div className="size-204 respon6-next">
+                      <div className="rs1-select2 bor8 bg0">
+                        <select className="js-select2" name="time" defaultValue="">
+                          <option value="">Choose an option</option>
+                          <option value="s">Size S</option>
+                          <option value="m">Size M</option>
+                          <option value="l">Size L</option>
+                          <option value="xl">Size XL</option>
+                        </select>
+                        <div className="dropDownSelect2"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex-w flex-r-m p-b-10">
+                    <div className="size-203 flex-c-m respon6">Color</div>
+
+                    <div className="size-204 respon6-next">
+                      <div className="rs1-select2 bor8 bg0">
+                        <select className="js-select2" name="time" defaultValue="">
+                          <option value="">Choose an option</option>
+                          <option value="red">Red</option>
+                          <option value="blue">Blue</option>
+                          <option value="white">White</option>
+                          <option value="grey">Grey</option>
+                        </select>
+                        <div className="dropDownSelect2"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex-w flex-r-m p-b-10">
+                    <div className="size-204 flex-w flex-m respon6-next">
+                      <div className="wrap-num-product flex-w m-r-20 m-tb-10">
+                        <div className="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
+                          <i className="fs-16 zmdi zmdi-minus"></i>
+                        </div>
+
+                        <input
+                          className="mtext-104 cl3 txt-center num-product"
+                          type="number"
+                          name="num-product"
+                          defaultValue={1}
+                        />
+
+                        <div className="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
+                          <i className="fs-16 zmdi zmdi-plus"></i>
+                        </div>
+                      </div>
+
+                      <button className="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail" type="button">
+                        Add to cart
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex-w flex-m p-l-100 p-t-40 respon7">
+                  <div className="flex-m bor9 p-r-10 m-r-11">
+                    <a
+                      href="assets/#"
+                      className="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 js-addwish-detail tooltip100"
+                      data-tooltip="Add to Wishlist"
+                    >
+                      <i className="zmdi zmdi-favorite"></i>
+                    </a>
+                  </div>
+
+                  <a
+                    href="assets/#"
+                    className="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 m-r-8 tooltip100"
+                    data-tooltip="Facebook"
+                  >
+                    <i className="fa fa-facebook"></i>
+                  </a>
+
+                  <a
+                    href="assets/#"
+                    className="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 m-r-8 tooltip100"
+                    data-tooltip="Twitter"
+                  >
+                    <i className="fa fa-twitter"></i>
+                  </a>
+
+                  <a
+                    href="assets/#"
+                    className="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 m-r-8 tooltip100"
+                    data-tooltip="Google Plus"
+                  >
+                    <i className="fa fa-google-plus"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ModalQuickView;
+

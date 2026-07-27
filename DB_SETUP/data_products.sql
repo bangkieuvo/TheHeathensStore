@@ -1,0 +1,66 @@
+INSERT INTO `the heathens store`.products (uuid,name,price,stock,description,team_id,season_id,jersey_type) VALUES
+	 (0x019D8CC3F73C720F94E68037CA23470C,'Manchester United Home 24-25',100.00,100,'Manchester United Home 24-25: Áo sân nhà đỏ truyền thống, chất liệu thoáng khí.',14,5,'home'),
+	 (0x019D8CC3F73C720F94E7EFCFBB36EDE6,'Manchester United Away 24-25',100.00,75,'Manchester United Away 24-25: Áo sân khách màu xanh navy họa tiết chìm cực đẹp.',14,5,'away'),
+	 (0x019D8CC3F73C720F94E8FA5268DAB487,'Manchester United Third 24-25',110.00,40,'Manchester United Third 24-25: Mẫu áo thứ 3 phong cách Retro sử dụng logo Trefoil.',14,5,'third'),
+	 (0x019D8CC3F73C720F94E9F44F81769B20,'Manchester United Home GK 24-25',95.00,30,'Manchester United Home GK 24-25: Áo thủ môn sân nhà màu vàng neon nổi bật.',14,5,'home_gk'),
+	 (0x019D8CC3F73C720F94EA7DB0FED53DEF,'Manchester United Away GK 24-25',95.00,20,'Manchester United Away GK 24-25: Áo thủ môn sân khách màu xanh lá cây.',14,5,'away_gk'),
+	 (0x019D8CC3F73C720F94EB77B4649BCF9A,'Manchester United Third GK 24-25',95.00,15,'Manchester United Third GK 24-25: Áo thủ môn mẫu thứ 3 màu đen họa tiết xám.',14,5,'third_gk'),
+	 (0x019D8CC3F73C720F94ECAE0967282C4A,'Manchester United Home 25-26',105.00,120,'Manchester United Home 25-26: Thiết kế mới nhất với các chi tiết hiện đại.',14,6,'home'),
+	 (0x019D8CC3F73C720F94EDC33EC39C09A1,'Manchester United Away 25-26',105.00,90,'Manchester United Away 25-26: Áo sân khách trắng phối đỏ đen mang hơi hướng thập niên 90.',14,6,'away'),
+	 (0x019D8CC3F73C720F94EEA729B0342653,'Manchester United Third 25-26',115.00,50,'Manchester United Third 25-26: Mẫu áo thứ 3 đặc biệt kỷ niệm lịch sử CLB.',14,6,'third'),
+	 (0x019D8CC3F73C720F94EFCC7C67707F75,'Manchester United Home GK 25-26',100.00,35,'Manchester United Home GK 25-26: Áo thủ môn sân nhà mùa mới, công nghệ siêu nhẹ.',14,6,'home_gk');
+INSERT INTO `the heathens store`.products (uuid,name,price,stock,description,team_id,season_id,jersey_type) VALUES
+	 (0x019D8CC3F73C720F94F0F04FE5504F88,'Manchester United Away GK 25-26',100.00,25,'Manchester United Away GK 25-26: Áo thủ môn sân khách màu xanh dương đậm.',14,6,'away_gk'),
+	 (0x019D8CC3F73C720F94F1A9F2B40B415A,'Manchester United Third GK 25-26',100.00,20,'Manchester United Third GK 25-26: Áo thủ môn mẫu thứ 3 bản giới hạn.',14,6,'third_gk'),
+	 (0x019D8CC3F73C720F94F2320B705CDAAF,'Manchester City Home 24-25',95.00,100,'Manchester City Home 24-25: Áo sân nhà màu xanh Sky Blue đặc trưng, mã vùng 0161.',13,5,'home'),
+	 (0x019D8CC3F73C720F94F3EDC07ECF9A90,'Manchester City Away 24-25',95.00,75,'Manchester City Away 24-25: Áo sân khách thiết kế sọc vàng đen huyền thoại.',13,5,'away'),
+	 (0x019D8CC3F73C720F94F450CC5997B42E,'Manchester City Third 24-25',95.00,40,'Manchester City Third 24-25: Mẫu áo thứ 3 màu đỏ mận phối họa tiết tinh xảo.',13,5,'third'),
+	 (0x019D8CC3F73C720F94F581E78F8EA5AD,'Manchester City Home GK 24-25',90.00,30,'Manchester City Home GK 24-25: Áo thủ môn sân nhà màu nâu cafe phối họa tiết.',13,5,'home_gk'),
+	 (0x019D8CC3F73C720F94F6E029BCCEBB04,'Manchester City Away GK 24-25',90.00,20,'Manchester City Away GK 24-25: Áo thủ môn sân khách màu cam rực rỡ.',13,5,'away_gk'),
+	 (0x019D8CC3F73C720F94F71A5D0365B1E6,'Manchester City Third GK 24-25',90.00,15,'Manchester City Third GK 24-25: Áo thủ môn mẫu thứ 3 màu tím than.',13,5,'third_gk'),
+	 (0x019D8CC3F73C720F94F800CA26598833,'Manchester City Home 25-26',100.00,120,'Manchester City Home 25-26: Thiết kế sân nhà mùa mới lấy cảm hứng từ lịch sử CLB.',13,6,'home'),
+	 (0x019D8CC3F73C720F94F9E7AD790757FE,'Manchester City Away 25-26',100.00,90,'Manchester City Away 25-26: Áo sân khách màu xanh đậm họa tiết tối giản.',13,6,'away');
+INSERT INTO `the heathens store`.products (uuid,name,price,stock,description,team_id,season_id,jersey_type) VALUES
+	 (0x019D8CC3F73C720F94FAD02B976A4253,'Manchester City Third 25-26',100.00,50,'Manchester City Third 25-26: Mẫu áo thứ 3 thiết kế mang đậm tính tương lai.',13,6,'third'),
+	 (0x019D8CC3F73C720F94FBCEE363A41748,'Manchester City Home GK 25-26',95.00,35,'Manchester City Home GK 25-26: Áo thủ môn sân nhà mùa 25-26, màu xanh lục bảo.',13,6,'home_gk'),
+	 (0x019D8CC3F73C720F94FC89EB7F344438,'Manchester City Away GK 25-26',95.00,25,'Manchester City Away GK 25-26: Áo thủ môn sân khách màu hồng phấn hiện đại.',13,6,'away_gk'),
+	 (0x019D8CC3F73C720F94FD56A9F705224E,'Manchester City Third GK 25-26',95.00,20,'Manchester City Third GK 25-26: Áo thủ môn mẫu thứ 3 màu xám tro carbon.',13,6,'third_gk'),
+	 (0x019D8CC3F73C720F94FE781FCB342A95,'Arsenal Home 25-26',105.00,120,'Arsenal Home 25-26: Thiết kế sân nhà đỏ trắng với các chi tiết mạ vàng sang trọng.',1,6,'home'),
+	 (0x019D8CC3F73C720F94FFA99D5B246850,'Arsenal Away 25-26',105.00,90,'Arsenal Away 25-26: Áo sân khách màu vàng nhạt lấy cảm hứng từ thập niên 70.',1,6,'away'),
+	 (0x019D8CC3F73C720F95006B8FD8A283F7,'Arsenal Third 25-26',115.00,50,'Arsenal Third 25-26: Mẫu áo thứ 3 phong cách hiện đại với công nghệ vải Heat.Rdy.',1,6,'third'),
+	 (0x019D8CC3F73C720F9501E3DC42E25615,'Arsenal Home GK 25-26',100.00,35,'Arsenal Home GK 25-26: Áo thủ môn sân nhà mùa mới, màu xanh lục bảo.',1,6,'home_gk'),
+	 (0x019D8CC3F73C720F950200B38C026DB8,'Arsenal Away GK 25-26',100.00,25,'Arsenal Away GK 25-26: Áo thủ môn sân khách màu cam rực rỡ.',1,6,'away_gk'),
+	 (0x019D8CC3F73C720F95034756DA2C5821,'Arsenal Third GK 25-26',100.00,20,'Arsenal Third GK 25-26: Áo thủ môn mẫu thứ 3 thiết kế tối giản đặc biệt.',1,6,'third_gk');
+INSERT INTO `the heathens store`.products (uuid,name,price,stock,description,team_id,season_id,jersey_type) VALUES
+	 (0x019D8CC3F73C720F9504F35DAB12EEBB,'Paris Saint-Germain Home 25-26',105.00,120,'Paris Saint-Germain Home 25-26: Thiết kế Hechter truyền thống với phong cách hiện đại từ Nike.',125,6,'home'),
+	 (0x019D8CC3F73C720F95053F648F55AF04,'Paris Saint-Germain Away 25-26',105.00,90,'Paris Saint-Germain Away 25-26: Áo sân khách màu trắng sang trọng kết hợp logo Jordan Brand.',125,6,'away'),
+	 (0x019D8CC3F73C720F95068A1AE7D5A9EA,'Paris Saint-Germain Third 25-26',115.00,50,'Paris Saint-Germain Third 25-26: Mẫu áo thứ 3 đặc biệt mang phong cách thời trang đường phố Paris.',125,6,'third'),
+	 (0x019D8CC3F73C720F9507B7BD3EC26B40,'Paris Saint-Germain Home GK 25-26',100.00,30,'Paris Saint-Germain Home GK 25-26: Áo thủ môn sân nhà màu vàng đồng rực rỡ.',125,6,'home_gk'),
+	 (0x019D8CC3F73C720F9508963BA29F28C9,'Paris Saint-Germain Away GK 25-26',100.00,25,'Paris Saint-Germain Away GK 25-26: Áo thủ môn sân khách màu xanh bạc hà mát mẻ.',125,6,'away_gk'),
+	 (0x019D8CC3F73C720F950915D7C9F30E44,'Paris Saint-Germain Third GK 25-26',100.00,20,'Paris Saint-Germain Third GK 25-26: Áo thủ môn mẫu thứ 3 màu đỏ mận huyền bí.',125,6,'third_gk'),
+	 (0x019D8CC3F73C720F950A6508E9C3F12A,'Olympique de Marseille Home 25-26',95.00,100,'Olympique de Marseille Home 25-26: Màu trắng truyền thống phối xanh sky blue, phong cách Puma đặc trưng.',132,6,'home'),
+	 (0x019D8CC3F73C720F950B10FF51CA61F0,'Olympique de Marseille Away 25-26',95.00,75,'Olympique de Marseille Away 25-26: Thiết kế sân khách màu xanh đậm lấy cảm hứng từ thành phố cảng.',132,6,'away'),
+	 (0x019D8CC3F73C720F950CC6321CEE9472,'Olympique de Marseille Third 25-26',105.00,40,'Olympique de Marseille Third 25-26: Mẫu áo thứ 3 phong cách nghệ thuật đường phố Marseille.',132,6,'third'),
+	 (0x019D8CC3F73C720F950DA69B19AAFF8E,'Olympique de Marseille Home GK 25-26',90.00,25,'Olympique de Marseille Home GK 25-26: Áo thủ môn sân nhà màu vàng neon nổi bật.',132,6,'home_gk');
+INSERT INTO `the heathens store`.products (uuid,name,price,stock,description,team_id,season_id,jersey_type) VALUES
+	 (0x019D8CC3F73C720F950E8D6900B42CDD,'Olympique de Marseille Away GK 25-26',90.00,20,'Olympique de Marseille Away GK 25-26: Áo thủ môn sân khách màu hồng phấn hiện đại.',132,6,'away_gk'),
+	 (0x019D8CC3F73C720F950FC028F945C063,'Olympique de Marseille Third GK 25-26',90.00,15,'Olympique de Marseille Third GK 25-26: Áo thủ môn mẫu thứ 3 màu đen họa tiết đơn sắc.',132,6,'third_gk'),
+	 (0x019D8CC3F73C720F951048ED8D293243,'Atletico Madrid Home 25-26',95.00,100,'Atletico Madrid Home 25-26: Sọc đỏ trắng nguyên bản cùng logo CLB thêu sắc nét.',65,6,'home'),
+	 (0x019D8CC3F73C720F95114E7FDD42466A,'Atletico Madrid Away 25-26',95.00,70,'Atletico Madrid Away 25-26: Áo sân khách màu xanh navy phối viền đỏ.',65,6,'away'),
+	 (0x019D8CC3F73C720F9512427675AA152E,'Atletico Madrid Third 25-26',105.00,40,'Atletico Madrid Third 25-26: Mẫu áo thứ 3 phong cách hiện đại từ Nike.',65,6,'third'),
+	 (0x019D8CC3F73C720F9513D11B2668A2AF,'Atletico Madrid Home GK 25-26',90.00,25,'Atletico Madrid Home GK 25-26: Áo thủ môn sân nhà màu đen phối xanh dương.',65,6,'home_gk'),
+	 (0x019D8CC3F73C720F9514F2CA5AA46CA8,'Atletico Madrid Away GK 25-26',90.00,20,'Atletico Madrid Away GK 25-26: Áo thủ môn sân khách màu hồng neon.',65,6,'away_gk'),
+	 (0x019D8CC3F73C720F951586B6479F993C,'Atletico Madrid Third GK 25-26',90.00,15,'Atletico Madrid Third GK 25-26: Áo thủ môn mẫu thứ 3 màu vàng lục.',65,6,'third_gk'),
+	 (0x019D8CC3F73C720F95163F5B0249E98C,'FC Barcelona Home 25-26',100.00,150,'FC Barcelona Home 25-26: Sọc xanh đỏ Blaugrana truyền thống với công nghệ Nike Dri-FIT.',64,6,'home'),
+	 (0x019D8CC3F73C720F95170C59719075F0,'FC Barcelona Away 25-26',100.00,100,'FC Barcelona Away 25-26: Thiết kế sân khách màu đen phối chi tiết vàng sang trọng.',64,6,'away');
+INSERT INTO `the heathens store`.products (uuid,name,price,stock,description,team_id,season_id,jersey_type) VALUES
+	 (0x019D8CC3F73C720F951872CC3E8891E5,'FC Barcelona Third 25-26',110.00,60,'FC Barcelona Third 25-26: Mẫu áo thứ 3 cảm hứng từ kiến trúc nghệ thuật của thành phố.',64,6,'third'),
+	 (0x019D8CC3F73C720F951948F42AA08F62,'FC Barcelona Home GK 25-26',95.00,30,'FC Barcelona Home GK 25-26: Áo thủ môn sân nhà màu vàng neon.',64,6,'home_gk'),
+	 (0x019D8CC3F73C720F951A4A274A5D83B0,'FC Barcelona Away GK 25-26',95.00,25,'FC Barcelona Away GK 25-26: Áo thủ môn sân khách màu xanh lục bảo.',64,6,'away_gk'),
+	 (0x019D8CC3F73C720F951B89556E423E59,'FC Barcelona Third GK 25-26',95.00,20,'FC Barcelona Third GK 25-26: Áo thủ môn mẫu thứ 3 màu đen xám.',64,6,'third_gk'),
+	 (0x019D8CC3F73C720F951CA6DF633E225D,'Real Madrid Home 25-26',105.00,200,'Real Madrid Home 25-26: Màu trắng hoàng gia tinh khôi với logo Adidas và ba sọc đặc trưng.',63,6,'home'),
+	 (0x019D8CC3F73C720F951D2D7D83257D92,'Real Madrid Away 25-26',105.00,120,'Real Madrid Away 25-26: Mẫu áo sân khách màu tím đậm phong cách hiện đại.',63,6,'away'),
+	 (0x019D8CC3F73C720F951EEEAEC5DCBE52,'Real Madrid Third 25-26',115.00,80,'Real Madrid Third 25-26: Thiết kế thứ 3 màu xám carbon phối họa tiết dệt chìm.',63,6,'third'),
+	 (0x019D8CC3F73C720F951F4461228F1422,'Real Madrid Home GK 25-26',100.00,40,'Real Madrid Home GK 25-26: Áo thủ môn sân nhà màu cam nổi bật.',63,6,'home_gk'),
+	 (0x019D8CC3F73C720F95207FA3D75CB15C,'Real Madrid Away GK 25-26',100.00,30,'Real Madrid Away GK 25-26: Áo thủ môn sân khách màu xanh dương nhạt.',63,6,'away_gk'),
+	 (0x019D8CC3F73C720F95211CF651EE59F8,'Real Madrid Third GK 25-26',100.00,25,'Real Madrid Third GK 25-26: Áo thủ môn mẫu thứ 3 màu đỏ thẫm.',63,6,'third_gk');
