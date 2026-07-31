@@ -1,4 +1,4 @@
-export const BACKEND_API_URL = 'http://localhost:8080/api/v1';
+export const BACKEND_API_URL = 'http://localhost:8080/api/demo';
 export const BACKEND_PUBLIC_URL = `${BACKEND_API_URL}/public`;
 export const BACKEND_PRODUCT_URL = `${BACKEND_PUBLIC_URL}/products`;
 export const BACKEND_USER_URL = `${BACKEND_API_URL}/me`;

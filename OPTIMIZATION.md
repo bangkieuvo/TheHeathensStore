@@ -2,3 +2,5 @@
 ## 2. ProductSpecification - filter with jerseyType: need to use enum and multiple jersey types.
 ## 3. Improve function checkLogin in AuthenticationService
 ## 4. Check jwt if password changed
+## 5. ADD UPDATE_AT for tables
+## 6. ADD suggestion for search

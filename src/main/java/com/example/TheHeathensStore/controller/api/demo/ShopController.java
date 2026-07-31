@@ -14,16 +14,17 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("${API_URL}/public/products")
-@CrossOrigin(origins = "http://localhost:5173")
 public class ShopController {
     private final ShopService shopService;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<Page<ProductResponse>>> getProducts(
-            @RequestParam(value = "page", defaultValue = "1") int pageNumber,
-            @RequestParam(value = "sort", defaultValue = "newest") String sort,
-            @ModelAttribute ProductFilter productFilter
-    ) {
+    public ResponseEntity<ApiResponse<Page<ProductResponse>>> getProducts
+            (
+                    @RequestParam(value = "page", defaultValue = "1") int pageNumber,
+                    @RequestParam(value = "sort", defaultValue = "newest") String sort,
+                    @ModelAttribute ProductFilter productFilter
+            ) {
+
         return ResponseEntity.ok(ApiResponse.success(shopService.getShopWithFilter(pageNumber - 1, productFilter, sort)));
     }
 

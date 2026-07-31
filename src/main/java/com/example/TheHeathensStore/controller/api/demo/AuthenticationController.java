@@ -19,7 +19,6 @@ import java.time.Duration;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("${API_URL}/public")
-@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 public class AuthenticationController {
     private final AuthenticationService authenticationService;
     private final UserService userService;

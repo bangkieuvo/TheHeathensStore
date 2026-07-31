@@ -21,7 +21,6 @@ import java.util.UUID;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("${API_URL}/me")
-@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 public class UserController {
     private final CartService cartService;
     private final FavoriteService favoriteService;

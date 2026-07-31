@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class ProductFilter {
+    private String keyword;
     private String teamName;
     private String leagueName;
     private String seasonName;

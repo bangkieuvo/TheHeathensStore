@@ -27,27 +27,26 @@ public class ShopService {
     private final ProductMapper productMapper;
     private final ProductImageRepository productImageRepository;
 
-    public Page<ProductResponse> getShop(int pageNumber) {
-        if (pageNumber < 0) {
+    public Page<ProductResponse> getShop(int pageIndex) {
+        if (pageIndex < 0) {
             throw new InvalidRequestException("Invalid page number");
         }
-        Pageable pageable = PageRequest.of(pageNumber, PAGE_SIZE);
+        Pageable pageable = PageRequest.of(pageIndex, PAGE_SIZE);
         return productRepository.findByIsActiveTrue(pageable)
-                                .map(product -> {
-                                    return productMapper.entityToResponse(
-                                            product,
-                                            productImageRepository.findByProductId(
-                                                    product.getId()
-                                            )
-                                    );
-                                });
+                                .map(product -> productMapper.entityToResponse(
+                                        product,
+                                        productImageRepository.findByProductId(
+                                                product.getId()
+                                        )
+                                ));
     }
 
-    public Page<ProductResponse> getShopWithFilter(int pageNumber, ProductFilter productFilter, String sort) {
-        if (pageNumber < 0) {
+    public Page<ProductResponse> getShopWithFilter(int pageIndex, ProductFilter productFilter, String sort) {
+        if (pageIndex < 0) {
             throw new InvalidRequestException("Invalid page number");
         }
-        Pageable pageable = PageRequest.of(pageNumber, PAGE_SIZE, ProductSort.fromValue(sort).toSort());
+        Pageable pageable = PageRequest.of(pageIndex, PAGE_SIZE, ProductSort.fromValue(sort)
+                                                                             .toSort());
         Specification<Product> specification = ProductSpecification.filterProduct(productFilter);
         return productRepository.findAll(specification, pageable)
                                 .map(product -> {
@@ -63,8 +62,9 @@ public class ShopService {
     public List<ProductResponse> getFeatureProducts() {
         List<Product> products = productRepository.findAll();
         List<ProductResponse> productResponses = new ArrayList<>();
-        for(int i = 0;i<8;i++){
-            productResponses.add(productMapper.entityToResponse(products.get(i),productImageRepository.findByProductId(products.get(i).getId())));
+        for (int i = 0; i < (productResponses.size() - 1) || i < 8; i++) {
+            productResponses.add(productMapper.entityToResponse(products.get(i), productImageRepository.findByProductId(products.get(i)
+                                                                                                                                .getId())));
         }
         return productResponses;
     }

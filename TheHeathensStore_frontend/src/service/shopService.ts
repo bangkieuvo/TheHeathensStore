@@ -9,7 +9,7 @@ export const getShopProducts = async (pageNumber: number): Promise<Page<Product>
     if (pageNumber < 1) {
         throw new Error('Page number must be >= 1');
     }
-    const response = await axios.get<ApiResponse<Page<Product>>>(`${API_URL}?page=${pageNumber - 1}`);
+    const response = await axios.get<ApiResponse<Page<Product>>>(`${API_URL}?page=${pageNumber}`);
     const wrapper = response.data;
     if (!wrapper.success) {
         throw new Error(wrapper.message);
