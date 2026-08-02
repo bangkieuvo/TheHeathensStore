@@ -48,7 +48,11 @@ public class AuthenticationService {
     public String login(UserLoginRequest userLoginRequest) {
         if (userLoginRequest == null || userLoginRequest.getUsername() == null || userLoginRequest.getPassword() == null)
             throw new InvalidRequestException("Invalid username or password");
-        User user = userRepository.findByUsername(userLoginRequest.getUsername())
+        String identifier = userLoginRequest.getUsername().trim();
+        User user = userRepository.findByUsername(identifier)
+                                  .or(() -> userRepository.findByEmailIgnoreCase(identifier))
+                                  .or(() -> userInfoRepository.findByPhone(identifier)
+                                                                  .flatMap(info -> userRepository.findById(info.getUserId())))
                                   .orElse(null);
         if (user == null) {
             throw new InvalidRequestException("Invalid username or password");
@@ -56,7 +60,7 @@ public class AuthenticationService {
         if (!bCryptHasher.isMatch(userLoginRequest.getPassword(), user.getPasswordHash())) {
             throw new InvalidRequestException("Invalid username or password");
         }
-        return jwtUtil.generateToken(userLoginRequest.getUsername());
+        return jwtUtil.generateToken(user.getUsername());
     }
 
     public UserPrincipal authenticate(String token) {

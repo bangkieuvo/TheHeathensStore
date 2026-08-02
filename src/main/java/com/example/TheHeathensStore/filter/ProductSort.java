@@ -14,7 +14,11 @@ public enum ProductSort {
                               .and(Sort.by(Sort.Direction.ASC, "id"))),
     NAME_DESC("name_desc", Sort.by(Sort.Direction.DESC, "name")
                                 .and(Sort.by(Sort.Direction.ASC, "id"))),
-    NEWEST("newest", Sort.by(Sort.Direction.DESC, "id"));
+    BEST_SELLING("best_selling", Sort.by(Sort.Direction.DESC, "salesCount")
+                                      .and(Sort.by(Sort.Direction.DESC, "createdAt"))
+                                      .and(Sort.by(Sort.Direction.DESC, "id"))),
+    NEWEST("newest", Sort.by(Sort.Direction.DESC, "createdAt")
+                         .and(Sort.by(Sort.Direction.DESC, "id")));
 
     private final String value;
     private final Sort sort;

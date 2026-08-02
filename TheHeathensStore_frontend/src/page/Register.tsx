@@ -8,6 +8,7 @@ const Register = () => {
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [fullName, setFullName] = useState("");
+    const [phone, setPhone] = useState("");
     const [address, setAddress] = useState("");
     const [password, setPassword] = useState("");
     const [passwordAgain, setPasswordAgain] = useState("");
@@ -26,7 +27,7 @@ const Register = () => {
         setIsSubmitting(true);
 
         try {
-            await register(createRegisterUser(username, password, email, fullName, address));
+            await register(createRegisterUser(username, password, email, fullName, phone, address));
             navigate("/login", {replace: true});
         } catch {
             setErrorMessage("Registration failed. Please check your information and try again.");
@@ -92,6 +93,23 @@ const Register = () => {
                                         onChange={(e) => setEmail(e.target.value)}
                                         disabled={isSubmitting}
                                         required
+                                    />
+                                </div>
+
+                                <div className="p-b-20">
+                                    <label className="stext-102 cl3" htmlFor="register-phone">
+                                        Phone
+                                    </label>
+                                    <input
+                                        id="register-phone"
+                                        className="size-111 bor8 stext-102 cl2 p-lr-20"
+                                        type="tel"
+                                        name="phone"
+                                        placeholder="Enter your phone number"
+                                        autoComplete="tel"
+                                        value={phone}
+                                        onChange={(e) => setPhone(e.target.value)}
+                                        disabled={isSubmitting}
                                     />
                                 </div>
 

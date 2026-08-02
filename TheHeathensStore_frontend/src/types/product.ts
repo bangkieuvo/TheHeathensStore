@@ -3,10 +3,14 @@ export interface Product {
     name: string;
     price: number;
     stock: number;
+    salesCount?: number;
     description: string;
     jerseyType: string;
     teamName: string;
+    leagueName?: string | null;
     season: string;
+    createdAt: string;
+    updatedAt: string;
     thumbnail: {
         id: number
         url: string;
@@ -27,6 +31,8 @@ export interface ProductMin {
     jerseyType: string;
     teamName: string;
     season: string;
+    createdAt: string;
+    updatedAt: string;
     thumbnailUrl: string;
 };
 export const createProductMin =
@@ -38,5 +44,7 @@ export const createProductMin =
         jerseyType: string,
         teamName: string,
         season: string,
-        thumbnailUrl: string
-    ): ProductMin => ({uuid, name, price, stock, jerseyType, teamName, season, thumbnailUrl});
+        thumbnailUrl: string,
+        createdAt: string = '',
+        updatedAt: string = ''
+    ): ProductMin => ({uuid, name, price, stock, jerseyType, teamName, season, createdAt, updatedAt, thumbnailUrl});

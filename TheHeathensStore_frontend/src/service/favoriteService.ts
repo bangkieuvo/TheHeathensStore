@@ -1,5 +1,5 @@
 import axios from "axios";
-import type {Favorite, FavoriteItem} from "../types/favorite.ts";
+import type {Favorite} from "../types/favorite.ts";
 import {BACKEND_USER_URL} from "../util/constants.ts";
 import type {ApiResponse} from "../types/generic/apiResponse.ts";
 
@@ -16,15 +16,23 @@ export const getFavorites = async (): Promise<Favorite> => {
     return wrapper.data;
 }
 
-export const addFavorite = async (productUuid: string): Promise<FavoriteItem> => {
-    const response = await axios.put<ApiResponse<FavoriteItem>>(`${API_URL}/${productUuid}`, null, {
+const getFavoriteFromResponse = (wrapper: ApiResponse<Favorite>): Favorite => {
+    if (!wrapper.success || !wrapper.data) {
+        throw new Error(wrapper.message);
+    }
+    return wrapper.data;
+};
+
+export const addFavorite = async (productUuid: string): Promise<Favorite> => {
+    const response = await axios.put<ApiResponse<Favorite>>(`${API_URL}/${productUuid}`, null, {
         withCredentials: true,
     });
-    return response.data.data;
+    return getFavoriteFromResponse(response.data);
 }
 
-export const deleteFavorite = async (productUuid: string): Promise<void> => {
-    await axios.delete(`${API_URL}/${productUuid}`, {
+export const deleteFavorite = async (productUuid: string): Promise<Favorite> => {
+    const response = await axios.delete<ApiResponse<Favorite>>(`${API_URL}/${productUuid}`, {
         withCredentials: true,
     });
+    return getFavoriteFromResponse(response.data);
 }

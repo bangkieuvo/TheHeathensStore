@@ -1,10 +1,13 @@
 import type {Product} from "../../types/product.ts";
+import type {MouseEvent} from 'react';
 import { Link } from 'react-router-dom';
 import './HomeProductCard.css';
 import {NO_IMAGE_AVAILABLE_URL} from "../../util/constants.ts";
+import type {CommerceState} from '../../hooks/useCommerceState.ts';
 
 type Props = {
   product: Product;
+  commerce: CommerceState;
   onQuickView?: (product: Product) => void;
 };
 
@@ -20,10 +23,25 @@ const getJerseyTypeLabel = (jerseyType: string) =>
     .map((word) => word.toUpperCase())
     .join(' ');
 
-const HomeProductCard = ({ product, onQuickView }: Props) => {
+const HomeProductCard = ({product, commerce, onQuickView}: Props) => {
   const productThumbnailUrl = product.thumbnail?.url.trim();
   const hasThumbnail = Boolean(productThumbnailUrl);
   const thumbnailUrl = productThumbnailUrl || NO_IMAGE_AVAILABLE_URL;
+  const isFavorite = commerce.isFavorite(product.uuid);
+  const isFavoriteLoading = commerce.isFavoritePending(product.uuid);
+  const isCartLoading = commerce.isCartPending(product.uuid);
+  const isAuthenticationLoading = commerce.authStatus === 'loading';
+  const isOutOfStock = product.stock <= 0;
+
+  const handleFavoriteClick = (event: MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    void commerce.toggleFavorite(product.uuid);
+  };
+
+  const handleAddToCartClick = (event: MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    void commerce.addProductToCart(product.uuid);
+  };
 
   return (
     <div
@@ -63,22 +81,36 @@ const HomeProductCard = ({ product, onQuickView }: Props) => {
             </span>
           </div>
 
-          <div className="block2-txt-child2 flex-r p-t-3">
-            <a
-              href="assets/#"
-              className="btn-addwish-b2 dis-block pos-relative js-addwish-b2"
+          <div className="block2-txt-child2 product-card-actions flex-r p-t-3">
+            <button
+              type="button"
+              className={`product-card-action${isFavorite ? ' is-active' : ''}`}
+              onClick={handleFavoriteClick}
+              disabled={isAuthenticationLoading || isFavoriteLoading}
+              aria-label={isFavorite ? `Remove ${product.name} from favorites` : `Add ${product.name} to favorites`}
+              aria-pressed={isFavorite}
+              aria-busy={isFavoriteLoading}
+              title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
             >
-              <img
-                className="icon-heart1 dis-block trans-04"
-                src="/assets/images/icons/icon-heart-01.png"
-                alt="ICON"
-              />
-              <img
-                className="icon-heart2 dis-block trans-04 ab-t-l"
-                src="/assets/images/icons/icon-heart-02.png"
-                alt="ICON"
-              />
-            </a>
+              <i
+                className={`zmdi ${isFavoriteLoading ? 'zmdi-refresh zmdi-hc-spin' : isFavorite ? 'zmdi-favorite' : 'zmdi-favorite-outline'}`}
+                aria-hidden="true"
+              ></i>
+            </button>
+            <button
+              type="button"
+              className="product-card-action"
+              onClick={handleAddToCartClick}
+              disabled={isAuthenticationLoading || isCartLoading || isOutOfStock}
+              aria-label={`Add ${product.name} to cart`}
+              aria-busy={isCartLoading}
+              title={isOutOfStock ? 'Out of stock' : 'Add to cart'}
+            >
+              <i
+                className={`zmdi ${isCartLoading ? 'zmdi-refresh zmdi-hc-spin' : 'zmdi-shopping-cart-plus'}`}
+                aria-hidden="true"
+              ></i>
+            </button>
           </div>
         </div>
       </div>

@@ -40,18 +40,25 @@ public class ProductSpecification {
             }
             if (StringUtils.hasText(teamName)) {
                 Join<Product, Team> teamJoin = root.join("team", JoinType.INNER);
-                predicates.add(cb.like(cb.lower(teamJoin.get("name")), "%" + teamName.toLowerCase() + "%"));
-            } else if (StringUtils.hasText(leagueName)) {
+                predicates.add(cb.like(cb.lower(teamJoin.get("name")), "%" + teamName.trim().toLowerCase(Locale.ROOT) + "%"));
+            }
+            if (StringUtils.hasText(leagueName)) {
                 Join<Product, Team> teamJoin = root.join("team", JoinType.INNER);
                 Join<Team, League> leagueJoin = teamJoin.join("league", JoinType.INNER);
-                predicates.add(cb.like(cb.lower(leagueJoin.get("name")), "%" + leagueName.toLowerCase() + "%"));
+                predicates.add(cb.like(cb.lower(leagueJoin.get("name")), "%" + leagueName.trim().toLowerCase(Locale.ROOT) + "%"));
             }
             if (StringUtils.hasText(seasonName)) {
                 Join<Product, Season> seasonJoin = root.join("season", JoinType.INNER);
-                predicates.add(cb.like(cb.lower(seasonJoin.get("name")), "%" + seasonName.toLowerCase() + "%"));
+                predicates.add(cb.like(cb.lower(seasonJoin.get("name")), "%" + seasonName.trim().toLowerCase(Locale.ROOT) + "%"));
             }
             if (StringUtils.hasText(jerseyType)) {
-                predicates.add(cb.like(root.get("jerseyType"), "%" + jerseyType.toLowerCase() + "%"));
+                predicates.add(cb.equal(root.get("jerseyType"), Product.JerseyType.valueOf(jerseyType.trim().toLowerCase(Locale.ROOT))));
+            }
+            if (productFilter.getMinPrice() != null) {
+                predicates.add(cb.greaterThanOrEqualTo(root.get("price"), productFilter.getMinPrice()));
+            }
+            if (productFilter.getMaxPrice() != null) {
+                predicates.add(cb.lessThanOrEqualTo(root.get("price"), productFilter.getMaxPrice()));
             }
             return cb.and(predicates.toArray(new Predicate[0]));
         };

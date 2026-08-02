@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { Product } from '../../types/product';
 import {NO_IMAGE_AVAILABLE_URL} from "../../util/constants.ts";
+import closeIcon from '../../assets/images/icons/icon-close.png';
 
 type HomeQuickViewModalProps = {
   isOpen: boolean;
@@ -61,7 +62,7 @@ const ModalQuickView = ({ isOpen, product, onClose }: HomeQuickViewModalProps) =
       <div className="container">
         <div className="bg0 p-t-60 p-b-30 p-lr-15-lg how-pos3-parent">
           <button className="how-pos3 hov3 trans-04 js-hide-modal1" type="button" onClick={onClose}>
-            <img src="/assets/images/icons/icon-close.png" alt="CLOSE" />
+            <img src={closeIcon} alt="CLOSE" />
           </button>
 
           <div className="row">
@@ -186,7 +187,7 @@ const ModalQuickView = ({ isOpen, product, onClose }: HomeQuickViewModalProps) =
                 <div className="flex-w flex-m p-l-100 p-t-40 respon7">
                   <div className="flex-m bor9 p-r-10 m-r-11">
                     <a
-                      href="assets/#"
+                      href="#"
                       className="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 js-addwish-detail tooltip100"
                       data-tooltip="Add to Wishlist"
                     >
@@ -195,7 +196,7 @@ const ModalQuickView = ({ isOpen, product, onClose }: HomeQuickViewModalProps) =
                   </div>
 
                   <a
-                    href="assets/#"
+                    href="#"
                     className="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 m-r-8 tooltip100"
                     data-tooltip="Facebook"
                   >
@@ -203,7 +204,7 @@ const ModalQuickView = ({ isOpen, product, onClose }: HomeQuickViewModalProps) =
                   </a>
 
                   <a
-                    href="assets/#"
+                    href="#"
                     className="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 m-r-8 tooltip100"
                     data-tooltip="Twitter"
                   >
@@ -211,7 +212,7 @@ const ModalQuickView = ({ isOpen, product, onClose }: HomeQuickViewModalProps) =
                   </a>
 
                   <a
-                    href="assets/#"
+                    href="#"
                     className="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 m-r-8 tooltip100"
                     data-tooltip="Google Plus"
                   >

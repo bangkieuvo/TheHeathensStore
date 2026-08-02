@@ -4,3 +4,4 @@
 ## 4. Check jwt if password changed
 ## 5. ADD UPDATE_AT for tables
 ## 6. ADD suggestion for search
+## 7. change UI of pre/next

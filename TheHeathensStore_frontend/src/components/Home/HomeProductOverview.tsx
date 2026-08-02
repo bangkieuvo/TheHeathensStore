@@ -2,23 +2,26 @@ import {useEffect, useState} from 'react';
 import {Link} from 'react-router-dom';
 import HomeProductCard from './HomeProductCard';
 import type {Product} from "../../types/product.ts";
-import {getFeatureProduct} from "../../service/homeService.ts";
+import {getShopProducts} from '../../service/shopService.ts';
+import type {CommerceState} from '../../hooks/useCommerceState.ts';
 
 type HomeProductOverviewProps = {
     onQuickView: (product: Product) => void;
+    commerce: CommerceState;
 };
 
-const HomeProductOverview = ({onQuickView}: HomeProductOverviewProps) => {
+const HomeProductOverview = ({onQuickView, commerce}: HomeProductOverviewProps) => {
     const [products, setProducts] = useState<Product[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [errorMessage, setErrorMessage] = useState('');
+    const [featuredSort, setFeaturedSort] = useState<'newest' | 'best_selling'>('newest');
 
     useEffect(() => {
         let isMounted = true;
 
         const fetchFeatureProducts = async () => {
             try {
-                const featureProducts = await getFeatureProduct();
+                const featureProducts = (await getShopProducts({page: 1, size: 8, sort: featuredSort})).content;
 
                 if (isMounted) {
                     setProducts(featureProducts);
@@ -43,7 +46,7 @@ const HomeProductOverview = ({onQuickView}: HomeProductOverviewProps) => {
         return () => {
             isMounted = false;
         };
-    }, []);
+    }, [featuredSort]);
 
     const featuredProducts = products.slice(0, 8);
 
@@ -51,12 +54,17 @@ const HomeProductOverview = ({onQuickView}: HomeProductOverviewProps) => {
         <section className="bg0 p-t-23 p-b-140">
             <div className="container">
                 <div className="p-b-10">
-                    <h3 className="ltext-103 cl5">Product Overview</h3>
+                    <h3 className="ltext-103 cl5">Featured Products</h3>
+                </div>
+
+                <div className="flex-w p-b-30">
+                    <button type="button" className={`stext-106 cl6 bor3 trans-04 m-r-32 ${featuredSort === 'newest' ? 'how-active1' : ''}`} onClick={() => setFeaturedSort('newest')}>Newest</button>
+                    <button type="button" className={`stext-106 cl6 bor3 trans-04 ${featuredSort === 'best_selling' ? 'how-active1' : ''}`} onClick={() => setFeaturedSort('best_selling')}>Best selling</button>
                 </div>
 
                 <div className="row isotope-grid">
                     {featuredProducts.map((p) => (
-                        <HomeProductCard key={p.uuid} product={p} onQuickView={onQuickView}/>
+                        <HomeProductCard key={p.uuid} product={p} commerce={commerce} onQuickView={onQuickView}/>
                     ))}
                 </div>
 

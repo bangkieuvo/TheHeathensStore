@@ -18,9 +18,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
+import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -61,5 +63,29 @@ class ShopServiceTest {
         assertEquals(Sort.Direction.ASC, pageable.getSort().getOrderFor("price").getDirection());
         assertEquals(Sort.Direction.ASC, pageable.getSort().getOrderFor("id").getDirection());
         assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void shouldRejectInvalidPriceRangeBeforeQueryingRepository() {
+        ProductFilter filter = new ProductFilter();
+        filter.setMinPrice(new BigDecimal("120.00"));
+        filter.setMaxPrice(new BigDecimal("100.00"));
+
+        ShopService shopService = new ShopService(productRepository, productMapper, productImageRepository);
+
+        assertThrows(
+                com.example.TheHeathensStore.exception.InvalidRequestException.class,
+                () -> shopService.getShopWithFilter(0, 16, filter, "newest")
+        );
+    }
+
+    @Test
+    void shouldRejectPageSizeAboveConfiguredLimit() {
+        ShopService shopService = new ShopService(productRepository, productMapper, productImageRepository);
+
+        assertThrows(
+                com.example.TheHeathensStore.exception.InvalidRequestException.class,
+                () -> shopService.getShopWithFilter(0, 101, new ProductFilter(), "newest")
+        );
     }
 }

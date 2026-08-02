@@ -1,90 +1,25 @@
+import ContentHero from '../components/content/ContentHero.tsx';
+import {usePageMetadata} from '../hooks/usePageMetadata.ts';
+import storyImage from '../assets/images/about/jersey-01.jpg';
+import missionImage from '../assets/images/about/jersey-02.jpg';
+
 const About = () => {
+    usePageMetadata('About us', 'The story and values behind The Heathens Store, a football shirt store built for supporters and collectors.');
     return (
         <>
-            <section className="bg0 p-t-75 p-b-120">
-                <div className="container">
-                    <div className="row p-b-148">
-                        <div className="col-md-7 col-lg-8">
-                            <div className="p-t-7 p-r-85 p-r-15-lg p-r-0-md">
-                                <h3 className="mtext-111 cl2 p-b-16">
-                                    Our Story
-                                </h3>
-
-                                <p className="stext-200 cl50 p-b-26">
-                                    The Heathens Store was founded in the heart of Manchester — a city where football
-                                    isn’t just a sport, but a way of life. Surrounded by legendary stadiums, passionate
-                                    fans, and a rich football culture, we were inspired to create a place where that
-                                    passion could be worn and shared.
-
-                                    What began as a small idea has grown into a global store for football lovers. From
-                                    iconic jerseys of legendary players to the latest kits worn on the biggest stages,
-                                    The Heathens Store connects fans to the game they love.
-
-                                    Every jersey tells a story — of unforgettable goals, historic matches, and the
-                                    players who made them happen. At The Heathens Store, we bring those stories closer
-                                    to you.
-                                </p>
-                            </div>
-                        </div>
-
-                        <div className="col-11 col-md-5 col-lg-4 m-lr-auto">
-                            <div className="how-bor1 ">
-                                <div className="hov-img0">
-                                    <img src="assets/images/about/jersey-01.jpg" alt="IMG"/>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="row">
-                        <div className="order-md-2 col-md-7 col-lg-8 p-b-30">
-                            <div className="p-t-7 p-l-85 p-l-15-lg p-l-0-md">
-                                <h3 className="mtext-111 cl2 p-b-16">
-                                    Our Mission
-                                </h3>
-
-                                <p className="stext-200 cl6 p-b-26">
-                                    Our mission is to bring fans closer to football through authentic, high-quality
-                                    player jerseys from all over the world.
-
-                                    We are committed to:
-
-                                    Offering jerseys from top clubs and national teams worldwide
-
-                                    Delivering products that combine authenticity, comfort, and style
-
-                                    Creating a seamless and enjoyable shopping experience
-
-                                    Whether you're a lifelong supporter or a new fan, The Heathens Store is your gateway
-                                    to the global football culture.
-                                </p>
-
-                                <div className="bor16 p-l-29 p-b-9 m-t-22">
-                                    <p className="stext-114 cl6 p-r-40 p-b-11">
-                                        “Some people believe football is a matter of life and death. I am very
-                                        disappointed with that attitude. I can assure you it is much, much more
-                                        important than that.”
-                                    </p>
-
-                                    <span className="stext-111 cl8">
-								- Bill Shankly 
-							</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="order-md-1 col-11 col-md-5 col-lg-4 m-lr-auto p-b-30">
-                            <div className="how-bor2">
-                                <div className="hov-img0">
-                                    <img src="assets/images/about/jersey-02.jpg" alt="IMG"/>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            <ContentHero eyebrow="ABOUT THE STORE" title="Football stories you can wear" description="A store shaped by Manchester football culture and built for supporters around the world."/>
+            <section className="container content-section about-content">
+                <div className="row align-items-center p-b-80">
+                    <div className="col-md-7 col-lg-8 p-b-30"><span className="content-kicker">OUR STORY</span><h2>Born from a city that lives football</h2><p>The Heathens Store began with a simple idea: give supporters a clear, enjoyable way to discover shirts connected to the clubs, seasons and matches they remember.</p><p>Every jersey tells a story — an unforgettable goal, a historic match or the player who defined an era. We organise products around those details so fans can find the shirt that means something to them.</p></div>
+                    <div className="col-11 col-md-5 col-lg-4 m-lr-auto"><div className="how-bor1"><div className="hov-img0"><img src={storyImage} alt="Football shirts displayed in The Heathens Store"/></div></div></div>
+                </div>
+                <div className="row align-items-center">
+                    <div className="order-md-2 col-md-7 col-lg-8 p-b-30"><span className="content-kicker">OUR MISSION</span><h2>Make collecting simple and meaningful</h2><p>We focus on useful product information, dependable stock validation and a checkout flow that keeps prices and delivery costs clear.</p><ul className="about-values"><li><strong>Clarity</strong><span>Club, season, kit type, price and availability are easy to understand.</span></li><li><strong>Respect for the game</strong><span>Editorial content celebrates the history and culture behind football shirts.</span></li><li><strong>Customer control</strong><span>Accounts provide saved addresses, wishlists and a transparent order history.</span></li></ul><blockquote>“Some people think football is a matter of life and death. I assure you, it’s much more serious than that.”<cite>— Bill Shankly</cite></blockquote></div>
+                    <div className="order-md-1 col-11 col-md-5 col-lg-4 m-lr-auto p-b-30"><div className="how-bor2"><div className="hov-img0"><img src={missionImage} alt="Classic football shirt collection"/></div></div></div>
                 </div>
             </section>
         </>
-);
+    );
 };
 
 export default About;

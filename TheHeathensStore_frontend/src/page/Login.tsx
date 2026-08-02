@@ -20,7 +20,7 @@ const Login = () => {
             await login(createLoginUser(username, password));
             navigate("/", {replace: true});
         } catch {
-            setErrorMessage("Login failed. Please check your username and password.");
+            setErrorMessage("Login failed. Please check your account and password.");
         } finally {
             setIsSubmitting(false);
         }
@@ -35,13 +35,13 @@ const Login = () => {
                             <form onSubmit={loginSubmit}>
                                 <div className="p-b-20">
                                     <label className="stext-102 cl3" htmlFor="login-email">
-                                        Username
+                                        Username, email or phone
                                     </label>
                                     <input
                                         id="login-email"
                                         className="size-111 bor8 stext-102 cl2 p-lr-20"
                                         name="username"
-                                        placeholder="Enter Username"
+                                        placeholder="Enter username, email or phone"
                                         autoComplete="username"
                                         value={username}
                                         onChange={(e) => setUsername(e.target.value)}

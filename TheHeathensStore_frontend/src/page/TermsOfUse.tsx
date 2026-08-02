@@ -1,0 +1,9 @@
+import ContentHero from '../components/content/ContentHero.tsx';
+import {usePageMetadata} from '../hooks/usePageMetadata.ts';
+
+const TermsOfUse = () => {
+    usePageMetadata('Terms of use', 'Terms governing accounts, product information, orders, payments, cancellations and website use.');
+    return <><ContentHero eyebrow="TERMS" title="Terms of use" description="The conditions that apply when you browse, create an account or place an order."/><article className="container legal-content content-section"><p className="legal-updated">Last updated: 2 August 2026</p><h2>Using the website</h2><p>You must provide accurate information, protect your account credentials and use the website only for lawful personal shopping activity.</p><h2>Product information</h2><p>We aim to present names, photographs, descriptions, prices and stock accurately. Display colours can vary by device, and availability remains subject to confirmation at checkout.</p><h2>Orders and payment</h2><p>An order is created after server-side stock and price validation. COD orders remain unpaid until delivery. The order code is the public reference for support enquiries.</p><h2>Cancellation</h2><p>Customers can cancel PENDING or CONFIRMED orders through My Account. Later stages may require support review because fulfilment has already started.</p><h2>Intellectual property</h2><p>Store branding, original editorial content and site design may not be reproduced for commercial use without permission. Club names and marks remain the property of their respective owners.</p><h2>Acceptable use</h2><p>Automated abuse, attempts to bypass security, fraudulent orders and interference with service operation are prohibited.</p><h2>Changes</h2><p>These terms may be updated when features, laws or business practices change. The effective date appears at the top of this page.</p></article></>;
+};
+
+export default TermsOfUse;

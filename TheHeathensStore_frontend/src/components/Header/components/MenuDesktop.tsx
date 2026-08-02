@@ -1,14 +1,7 @@
 import logo from "../../../assets/images/icons/logo.png";
 import {Link, matchPath, useLocation} from "react-router-dom";
 import {useState} from "react";
-
-const MENU_ITEMS = [
-    {label: "Home", path: "/"},
-    {label: "Shop", path: "/shop"},
-    {label: "Cart", path: "/cart"},
-    {label: "About", path: "/about"},
-    {label: "Contact", path: "/contact"},
-];
+import {MAIN_MENU_ITEMS} from '../../../data/navigation.ts';
 
 interface MenuDesktopProps {
     setIsCartOpen: (flag: boolean) => void;
@@ -90,7 +83,7 @@ const MenuDesktop: React.FC<MenuDesktopProps> = ({
 
                         <div className="menu-desktop">
                             <ul className="main-menu">
-                                {MENU_ITEMS.map(({label, path}) => (
+                                {MAIN_MENU_ITEMS.map(({label, path}) => (
                                     <li
                                         key={path}
                                         className={matchPath({path, end: true}, pathname) ? "active-menu" : undefined}

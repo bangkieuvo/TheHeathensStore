@@ -1,10 +1,49 @@
 import {useEffect, useMemo, useState} from 'react';
+import {useOutletContext, useSearchParams} from 'react-router-dom';
 import HomeProductCard from '../components/Home/HomeProductCard';
 import ModalQuickView from '../components/common/ModalQuickView';
 import {getShopProducts} from '../service/shopService';
 import type {Product} from '../types/product';
+import type {CommerceState} from '../hooks/useCommerceState.ts';
+import {usePageMetadata} from '../hooks/usePageMetadata.ts';
 
-type SortOption = 'default' | 'newest' | 'price-asc' | 'price-desc';
+type SortOption = 'newest' | 'best_selling' | 'price_asc' | 'price_desc' | 'name_asc';
+type PaginationItem = number | 'ellipsis-left' | 'ellipsis-right';
+
+const createPageRange = (start: number, end: number) =>
+    Array.from({length: end - start + 1}, (_, index) => start + index);
+
+const getPaginationItems = (currentPage: number, pageCount: number): PaginationItem[] => {
+    if (pageCount <= 7) {
+        return createPageRange(1, pageCount);
+    }
+
+    if (currentPage <= 3) {
+        return [
+            ...createPageRange(1, currentPage + 2),
+            'ellipsis-right',
+            pageCount,
+        ];
+    }
+
+    if (currentPage >= pageCount - 2) {
+        return [
+            1,
+            'ellipsis-left',
+            ...createPageRange(currentPage - 2, pageCount),
+        ];
+    }
+
+    return [
+        1,
+        'ellipsis-left',
+        currentPage - 1,
+        currentPage,
+        currentPage + 1,
+        'ellipsis-right',
+        pageCount,
+    ];
+};
 
 const getJerseyTypeLabel = (jerseyType: string) =>
     jerseyType
@@ -13,28 +52,39 @@ const getJerseyTypeLabel = (jerseyType: string) =>
         .join(' ');
 
 const sortOptions: { value: SortOption; label: string }[] = [
-    {value: 'default', label: 'Default'},
-    {value: 'newest', label: 'Newest season'},
-    {value: 'price-asc', label: 'Price: Low to High'},
-    {value: 'price-desc', label: 'Price: High to Low'},
+    {value: 'newest', label: 'Newest'},
+    {value: 'best_selling', label: 'Best selling'},
+    {value: 'price_asc', label: 'Price: Low to High'},
+    {value: 'price_desc', label: 'Price: High to Low'},
+    {value: 'name_asc', label: 'Name: A-Z'},
 ];
 
 const Shop = () => {
+    usePageMetadata('Shop football jerseys', 'Search and filter football jerseys by club, league, season, shirt type and price.');
+    const commerce = useOutletContext<CommerceState>();
+    const [searchParams, setSearchParams] = useSearchParams();
+    const pageParam = searchParams.get('page');
+    const parsedPage = Number(pageParam);
+    const pageNumber = pageParam !== null && Number.isInteger(parsedPage) && parsedPage >= 1
+        ? parsedPage
+        : 1;
     const [products, setProducts] = useState<Product[]>([]);
     const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [errorMessage, setErrorMessage] = useState('');
-    const [pageNumber, setPageNumber] = useState(1);
     const [pageInput, setPageInput] = useState('1');
     const [totalPages, setTotalPages] = useState(1);
     const [totalElements, setTotalElements] = useState(0);
-    const [activeTeam, setActiveTeam] = useState('All');
-    const [activeSeason, setActiveSeason] = useState('All');
-    const [activeJerseyType, setActiveJerseyType] = useState('All');
-    const [sortBy, setSortBy] = useState<SortOption>('default');
-    const [searchTerm, setSearchTerm] = useState('');
+    const [activeTeam, setActiveTeam] = useState(searchParams.get('teamName') || 'All');
+    const [activeSeason, setActiveSeason] = useState(searchParams.get('seasonName') || 'All');
+    const [activeJerseyType, setActiveJerseyType] = useState(searchParams.get('jerseyType') || 'All');
+    const [sortBy, setSortBy] = useState<SortOption>((searchParams.get('sort') as SortOption) || 'newest');
+    const [searchTerm, setSearchTerm] = useState(searchParams.get('keyword') || '');
+    const [minPrice, setMinPrice] = useState(searchParams.get('minPrice') || '');
+    const [maxPrice, setMaxPrice] = useState(searchParams.get('maxPrice') || '');
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const [isPageJumpOpen, setIsPageJumpOpen] = useState(false);
 
     useEffect(() => {
         let isMounted = true;
@@ -43,7 +93,16 @@ const Shop = () => {
             setIsLoading(true);
 
             try {
-                const productPage = await getShopProducts(pageNumber);
+                const productPage = await getShopProducts({
+                    page: pageNumber,
+                    keyword: searchTerm.trim() || undefined,
+                    teamName: activeTeam === 'All' ? undefined : activeTeam,
+                    seasonName: activeSeason === 'All' ? undefined : activeSeason,
+                    jerseyType: activeJerseyType === 'All' ? undefined : activeJerseyType,
+                    minPrice: minPrice === '' ? undefined : Number(minPrice),
+                    maxPrice: maxPrice === '' ? undefined : Number(maxPrice),
+                    sort: sortBy,
+                });
 
                 if (isMounted) {
                     setProducts(productPage.content);
@@ -72,60 +131,73 @@ const Shop = () => {
         return () => {
             isMounted = false;
         };
-    }, [pageNumber]);
+    }, [activeJerseyType, activeSeason, activeTeam, maxPrice, minPrice, pageNumber, searchTerm, sortBy]);
+
+    useEffect(() => {
+        const incomingKeyword = searchParams.get('keyword') || '';
+        if (incomingKeyword !== searchTerm) setSearchTerm(incomingKeyword);
+    }, [searchParams, searchTerm]);
 
     const teams = useMemo(() => ['All', ...Array.from(new Set(products.map((product) => product.teamName)))], [products]);
     const seasons = useMemo(() => ['All', ...Array.from(new Set(products.map((product) => product.season))).sort().reverse()], [products]);
     const jerseyTypes = useMemo(() => ['All', ...Array.from(new Set(products.map((product) => product.jerseyType)))], [products]);
 
-    const filteredProducts = useMemo(() => {
-        const normalizedSearchTerm = searchTerm.trim().toLowerCase();
-
-        return products
-            .filter((product) => activeTeam === 'All' || product.teamName === activeTeam)
-            .filter((product) => activeSeason === 'All' || product.season === activeSeason)
-            .filter((product) => activeJerseyType === 'All' || product.jerseyType === activeJerseyType)
-            .filter((product) => {
-                if (!normalizedSearchTerm) {
-                    return true;
-                }
-
-                return [product.name, product.teamName, product.season, product.jerseyType, product.description]
-                    .join(' ')
-                    .toLowerCase()
-                    .includes(normalizedSearchTerm);
-            })
-            .sort((firstProduct, secondProduct) => {
-                if (sortBy === 'newest') {
-                    return secondProduct.season.localeCompare(firstProduct.season);
-                }
-
-                if (sortBy === 'price-asc') {
-                    return firstProduct.price - secondProduct.price;
-                }
-
-                if (sortBy === 'price-desc') {
-                    return secondProduct.price - firstProduct.price;
-                }
-
-                return 0;
-            });
-    }, [activeJerseyType, activeSeason, activeTeam, products, searchTerm, sortBy]);
+    const filteredProducts = products;
 
     const pageCount = Math.max(1, totalPages);
     const isPreviousDisabled = pageNumber <= 1;
     const isNextDisabled = pageNumber >= pageCount;
+    const paginationItems = useMemo(
+        () => getPaginationItems(pageNumber, pageCount),
+        [pageCount, pageNumber],
+    );
 
     useEffect(() => {
         setPageInput(String(pageNumber));
+        setIsPageJumpOpen(false);
     }, [pageNumber]);
+
+    useEffect(() => {
+        if (pageParam === null || pageParam === String(pageNumber)) {
+            return;
+        }
+
+        const nextSearchParams = new URLSearchParams(searchParams);
+        if (pageNumber === 1) {
+            nextSearchParams.delete('page');
+        } else {
+            nextSearchParams.set('page', String(pageNumber));
+        }
+        setSearchParams(nextSearchParams, {replace: true});
+    }, [pageNumber, pageParam, searchParams, setSearchParams]);
+
+    const navigateToPage = (nextPage: number) => {
+        const normalizedPage = Math.min(Math.max(nextPage, 1), pageCount);
+        const nextSearchParams = new URLSearchParams(searchParams);
+
+        if (normalizedPage === 1) {
+            nextSearchParams.delete('page');
+        } else {
+            nextSearchParams.set('page', String(normalizedPage));
+        }
+
+        setSearchParams(nextSearchParams);
+    };
 
     const resetFilters = () => {
         setActiveTeam('All');
         setActiveSeason('All');
         setActiveJerseyType('All');
-        setSortBy('default');
+        setSortBy('newest');
         setSearchTerm('');
+        setMinPrice('');
+        setMaxPrice('');
+        setSearchParams({});
+    };
+
+    const selectFilter = (setter: (value: string) => void, value: string) => {
+        setter(value);
+        navigateToPage(1);
     };
 
     const commitPageInput = () => {
@@ -137,8 +209,16 @@ const Shop = () => {
         }
 
         const nextPage = Math.min(Math.max(requestedPage, 1), pageCount);
-        setPageNumber(nextPage);
+        navigateToPage(nextPage);
         setPageInput(String(nextPage));
+        setIsPageJumpOpen(false);
+    };
+
+    const adjustPageInput = (amount: number) => {
+        const requestedPage = Number(pageInput);
+        const currentInput = Number.isInteger(requestedPage) ? requestedPage : pageNumber;
+        const nextInput = Math.min(Math.max(currentInput + amount, 1), pageCount);
+        setPageInput(String(nextInput));
     };
 
     return (
@@ -156,7 +236,7 @@ const Shop = () => {
                                     key={team}
                                     className={`stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 ${activeTeam === team ? 'how-active1' : ''}`}
                                     type="button"
-                                    onClick={() => setActiveTeam(team)}
+                                    onClick={() => selectFilter(setActiveTeam, team)}
                                 >
                                     {team === 'All' ? 'All Products' : team}
                                 </button>
@@ -197,7 +277,18 @@ const Shop = () => {
                                     name="search-product"
                                     placeholder="Search by club, season, kit type"
                                     value={searchTerm}
-                                    onChange={(event) => setSearchTerm(event.target.value)}
+                                    onChange={(event) => {
+                                        const value = event.target.value;
+                                        const nextSearchParams = new URLSearchParams(searchParams);
+                                        if (value.trim()) {
+                                            nextSearchParams.set('keyword', value);
+                                        } else {
+                                            nextSearchParams.delete('keyword');
+                                        }
+                                        nextSearchParams.delete('page');
+                                        setSearchTerm(value);
+                                        setSearchParams(nextSearchParams);
+                                    }}
                                 />
                             </div>
                         </div>
@@ -213,7 +304,10 @@ const Shop = () => {
                                                 <button
                                                     type="button"
                                                     className={`filter-link stext-106 trans-04 ${sortBy === option.value ? 'filter-link-active' : ''}`}
-                                                    onClick={() => setSortBy(option.value)}
+                                                    onClick={() => {
+                                                        setSortBy(option.value);
+                                                        navigateToPage(1);
+                                                    }}
                                                 >
                                                     {option.label}
                                                 </button>
@@ -231,7 +325,7 @@ const Shop = () => {
                                                 <button
                                                     type="button"
                                                     className={`filter-link stext-106 trans-04 ${activeSeason === season ? 'filter-link-active' : ''}`}
-                                                    onClick={() => setActiveSeason(season)}
+                                                    onClick={() => selectFilter(setActiveSeason, season)}
                                                 >
                                                     {season}
                                                 </button>
@@ -249,7 +343,7 @@ const Shop = () => {
                                                 <button
                                                     type="button"
                                                     className={`filter-link stext-106 trans-04 ${activeJerseyType === jerseyType ? 'filter-link-active' : ''}`}
-                                                    onClick={() => setActiveJerseyType(jerseyType)}
+                                                    onClick={() => selectFilter(setActiveJerseyType, jerseyType)}
                                                 >
                                                     {jerseyType === 'All' ? 'All' : getJerseyTypeLabel(jerseyType)}
                                                 </button>
@@ -259,6 +353,25 @@ const Shop = () => {
                                 </div>
 
                                 <div className="filter-col4 p-b-27">
+                                    <div className="mtext-102 cl2 p-b-15">Price range</div>
+
+                                    <div className="p-b-10">
+                                        <input className="bor8 stext-106 cl2 p-lr-10" type="number" min="0"
+                                               placeholder="Minimum" value={minPrice}
+                                               onChange={(event) => {
+                                                   setMinPrice(event.target.value);
+                                                   navigateToPage(1);
+                                               }}/>
+                                    </div>
+                                    <div className="p-b-15">
+                                        <input className="bor8 stext-106 cl2 p-lr-10" type="number" min="0"
+                                               placeholder="Maximum" value={maxPrice}
+                                               onChange={(event) => {
+                                                   setMaxPrice(event.target.value);
+                                                   navigateToPage(1);
+                                               }}/>
+                                    </div>
+
                                     <div className="mtext-102 cl2 p-b-15">Summary</div>
 
                                     <div className="flex-w p-t-4 m-r--5">
@@ -283,7 +396,12 @@ const Shop = () => {
 
                     <div className="row isotope-grid">
                         {filteredProducts.map((product) => (
-                            <HomeProductCard key={product.uuid} product={product} onQuickView={setQuickViewProduct}/>
+                            <HomeProductCard
+                                key={product.uuid}
+                                product={product}
+                                commerce={commerce}
+                                onQuickView={setQuickViewProduct}
+                            />
                         ))}
                     </div>
 
@@ -306,57 +424,110 @@ const Shop = () => {
                     )}
 
                     {!isLoading && !errorMessage && totalElements > 0 && (
-                        <div className="flex-c-m p-t-40">
-                            <button
-                                type="button"
-                                className="flex-c-m stext-101 cl5 size-103 bg2 bor1 hov-btn2 p-lr-15 trans-04 m-r-8"
-                                disabled={isPreviousDisabled}
-                                style={{
-                                    opacity: isPreviousDisabled ? 0.45 : 1,
-                                    cursor: isPreviousDisabled ? 'not-allowed' : 'pointer',
-                                }}
-                                onClick={() => setPageNumber((current) => Math.max(1, current - 1))}
-                            >
-                                Previous
-                            </button>
-                            <span className="stext-102 cl6 p-lr-15 flex-c-m">
-                                <input
-                                    className="stext-102 cl6 txt-center bor8"
-                                    type="number"
-                                    min={1}
-                                    max={pageCount}
-                                    value={pageInput}
-                                    aria-label="Current page"
-                                    style={{width: '54px', height: '36px'}}
-                                    onChange={(event) => setPageInput(event.target.value)}
-                                    onKeyDown={(event) => {
-                                        if (event.key === 'Enter') {
-                                            commitPageInput();
+                        <div className="shop-pagination-section p-t-40">
+                            <div className="shop-pagination-container">
+                                <nav className="shop-pagination" aria-label="Phân trang sản phẩm">
+                                    <button
+                                        type="button"
+                                        className="shop-pagination-button shop-pagination-direction"
+                                        disabled={isPreviousDisabled}
+                                        onClick={() => navigateToPage(pageNumber - 1)}
+                                    >
+                                        <span aria-hidden="true">‹</span> Trước
+                                    </button>
+
+                                    {paginationItems.map((item) => {
+                                        if (typeof item === 'number') {
+                                            const isCurrentPage = item === pageNumber;
+                                            return (
+                                                <button
+                                                    key={item}
+                                                    type="button"
+                                                    className={`shop-pagination-button shop-pagination-page ${isCurrentPage ? 'is-active' : ''}`}
+                                                    aria-label={`Trang ${item}`}
+                                                    aria-current={isCurrentPage ? 'page' : undefined}
+                                                    onClick={() => navigateToPage(item)}
+                                                >
+                                                    {item}
+                                                </button>
+                                            );
                                         }
-                                    }}
-                                />
-                                <span className="p-lr-8">/</span>
-                                <span>{pageCount}</span>
-                            </span>
-                            <button
-                                type="button"
-                                className="flex-c-m stext-101 cl5 size-103 bg2 bor1 hov-btn2 p-lr-15 trans-04 m-l-8"
-                                onClick={commitPageInput}
-                            >
-                                Go
-                            </button>
-                            <button
-                                type="button"
-                                className="flex-c-m stext-101 cl5 size-103 bg2 bor1 hov-btn2 p-lr-15 trans-04 m-l-8"
-                                disabled={isNextDisabled}
-                                style={{
-                                    opacity: isNextDisabled ? 0.45 : 1,
-                                    cursor: isNextDisabled ? 'not-allowed' : 'pointer',
-                                }}
-                                onClick={() => setPageNumber((current) => Math.min(pageCount, current + 1))}
-                            >
-                                Next
-                            </button>
+
+                                        return (
+                                            <button
+                                                key={item}
+                                                type="button"
+                                                className="shop-pagination-button shop-pagination-ellipsis"
+                                                aria-label="Đi đến trang"
+                                                aria-expanded={isPageJumpOpen}
+                                                onClick={() => setIsPageJumpOpen((current) => !current)}
+                                            >
+                                                …
+                                            </button>
+                                        );
+                                    })}
+
+                                    <button
+                                        type="button"
+                                        className="shop-pagination-button shop-pagination-direction"
+                                        disabled={isNextDisabled}
+                                        onClick={() => navigateToPage(pageNumber + 1)}
+                                    >
+                                        Tiếp <span aria-hidden="true">›</span>
+                                    </button>
+                                </nav>
+
+                                {isPageJumpOpen && (
+                                    <div className="shop-pagination-jump" role="dialog" aria-label="Đi đến trang">
+                                        <div className="shop-pagination-jump-header">
+                                            <span>Đi đến trang...</span>
+                                            <button
+                                                type="button"
+                                                aria-label="Đóng"
+                                                onClick={() => setIsPageJumpOpen(false)}
+                                            >
+                                                ×
+                                            </button>
+                                        </div>
+                                        <div className="shop-pagination-jump-body">
+                                            <button
+                                                type="button"
+                                                aria-label="Giảm số trang"
+                                                onClick={() => adjustPageInput(-1)}
+                                            >
+                                                −
+                                            </button>
+                                            <input
+                                                type="number"
+                                                min={1}
+                                                max={pageCount}
+                                                value={pageInput}
+                                                aria-label="Trang muốn đến"
+                                                onChange={(event) => setPageInput(event.target.value)}
+                                                onKeyDown={(event) => {
+                                                    if (event.key === 'Enter') {
+                                                        commitPageInput();
+                                                    }
+                                                }}
+                                            />
+                                            <button
+                                                type="button"
+                                                aria-label="Tăng số trang"
+                                                onClick={() => adjustPageInput(1)}
+                                            >
+                                                +
+                                            </button>
+                                            <button
+                                                type="button"
+                                                className="shop-pagination-jump-submit"
+                                                onClick={commitPageInput}
+                                            >
+                                                Tới
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     )}
                 </div>

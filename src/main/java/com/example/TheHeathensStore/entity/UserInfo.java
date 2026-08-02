@@ -22,6 +22,9 @@ public class UserInfo {
     @Column(name = "full_name", nullable = false, length = 100)
     private String fullName;
 
-    @Column(name = "address", nullable = false, length = 255)
+    @Column(length = 20)
+    private String phone;
+
+    @Column(name = "address", nullable = false, length = 500)
     private String address;
 }

@@ -1,4 +1,5 @@
 import type {Favorite} from "../../../types/favorite.ts";
+import {Link} from 'react-router-dom';
 
 interface FavoritePanelProps {
     favorite: Favorite | null;
@@ -39,10 +40,11 @@ const FavoritePanel: React.FC<FavoritePanelProps> = ({favorite, isLoggedIn, isFa
                                         </div>
 
                                         <div className="header-favorite-item-txt p-t-8">
-                                            <a href="assets/#"
+                                            <Link to={`/product-detail/${item.productInfo.uuid}`}
+                                               onClick={() => setIsFavoriteOpen(false)}
                                                className="header-favorite-item-name m-b-18 hov-cl1 trans-04">
                                                 {item.productInfo.name}
-                                            </a>
+                                            </Link>
                                             <span className="header-favorite-item-info">
                                                 price: {item.productInfo.price}$
                                             </span>

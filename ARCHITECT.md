@@ -1,8 +1,4 @@
-# ĐẶC TẢ CHỨC NĂNG WEBSITE E-COMMERCE
-**Phiên bản:** 1.0  
-**Ngày:** 24/06/2026
-
----
+# ĐẶC TẢ CHỨC NĂNG 
 
 ## I. TỔNG QUAN
 - **Mục tiêu:** Xây dựng website bán hàng đa kênh, hiện đại, thân thiện với người dùng và tối ưu vận hành.
@@ -48,13 +44,10 @@
   - Áp dụng mã giảm giá
 
 - **Thanh toán (Checkout):**
-  - Nhập địa chỉ giao hàng (có thể lưu danh sách địa chỉ)
+  - Nhập địa chỉ giao hàng (có thể lưu danh sách địa chỉ), mặc định là address trên userInfo
   - Chọn phương thức vận chuyển (tự động tính phí ship)
   - Chọn phương thức thanh toán:
     - COD (thanh toán khi nhận hàng)
-    - Chuyển khoản ngân hàng
-    - Thẻ tín dụng / ghi nợ
-    - Ví điện tử (Momo, ZaloPay, VNPay,...)
   - Xác nhận đặt hàng, nhận mã đơn hàng
 
 ### 2. Tài khoản và quản lý cá nhân
@@ -72,8 +65,6 @@
   - Mua lại từ đơn hàng cũ
   - Danh sách yêu thích (Wishlist)
   - Quản lý địa chỉ giao hàng (nhiều địa chỉ)
-  - Theo dõi đơn hàng real-time (nếu tích hợp API vận chuyển)
-  - Đánh giá sản phẩm (có ảnh/video)
 
 ### 3. Nội dung & tiện ích bổ sung
 - **Trang tĩnh:** Giới thiệu, Liên hệ, FAQ, Chính sách đổi trả, Chính sách bảo mật, Điều khoản sử dụng

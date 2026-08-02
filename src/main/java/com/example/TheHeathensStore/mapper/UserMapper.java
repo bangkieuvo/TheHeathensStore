@@ -22,6 +22,7 @@ public class UserMapper {
                            .uuid(user.getUuid())
                            .username(user.getUsername())
                            .fullName(userInfo.getFullName())
+                           .phone(userInfo.getPhone())
                            .address(userInfo.getAddress())
                            .email(user.getEmail())
                            .build();

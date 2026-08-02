@@ -14,6 +14,7 @@ export interface RegisterUser {
     password: string;
     email: string;
     fullName: string;
+    phone: string;
     address: string;
 }
 
@@ -22,6 +23,7 @@ export const createRegisterUser = (
     password: string,
     email: string,
     fullName: string,
+    phone: string,
     address: string,
 ): RegisterUser => (
     {
@@ -29,6 +31,7 @@ export const createRegisterUser = (
         password,
         email,
         fullName,
+        phone,
         address,
     }
 );
@@ -38,5 +41,6 @@ export interface UserResponse {
     username: string;
     fullName: string;
     email: string;
+    phone: string;
     address: string;
 }

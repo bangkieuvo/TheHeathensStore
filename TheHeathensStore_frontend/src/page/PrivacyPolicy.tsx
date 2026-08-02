@@ -1,0 +1,9 @@
+import ContentHero from '../components/content/ContentHero.tsx';
+import {usePageMetadata} from '../hooks/usePageMetadata.ts';
+
+const PrivacyPolicy = () => {
+    usePageMetadata('Privacy policy', 'How The Heathens Store collects, uses, secures and retains customer personal information.');
+    return <><ContentHero eyebrow="PRIVACY" title="Your information, explained" description="What information the store uses and how you can manage it."/><article className="container legal-content content-section"><p className="legal-updated">Last updated: 2 August 2026</p><h2>Information we collect</h2><p>We process account details, contact information, saved delivery addresses, cart and wishlist contents, order history and the technical information required to keep an authenticated session secure.</p><h2>How information is used</h2><p>Information is used to operate accounts, fulfil orders, calculate delivery, provide support, prevent misuse and improve the shopping experience. We do not store card data because checkout currently supports COD only.</p><h2>Cookies</h2><p>An HTTP-only authentication cookie keeps signed-in sessions secure. The cookie is not accessible to frontend scripts and is removed when you log out.</p><h2>Sharing and retention</h2><p>We only share information with service providers when necessary to operate or deliver an order. Order snapshots are retained for transaction history, legal obligations and customer support.</p><h2>Your choices</h2><p>You can update profile and address information from My Account. Contact support to request access, correction or deletion where applicable; transaction records may need to be retained.</p><h2>Security</h2><p>Passwords are stored as one-way hashes. Authentication uses signed tokens in HTTP-only cookies. No system can guarantee absolute security, so suspicious activity should be reported promptly.</p></article></>;
+};
+
+export default PrivacyPolicy;

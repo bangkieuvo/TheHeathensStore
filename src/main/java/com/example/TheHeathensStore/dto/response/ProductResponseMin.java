@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
@@ -20,5 +21,7 @@ public class ProductResponseMin {
     private String jerseyType;
     private String teamName;
     private String season;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
     private String thumbnailUrl;
 }

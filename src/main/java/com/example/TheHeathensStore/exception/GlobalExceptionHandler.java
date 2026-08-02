@@ -69,6 +69,12 @@ public class GlobalExceptionHandler {
                              ));
     }
 
+    @ExceptionHandler(InsufficientStockException.class)
+    public ResponseEntity<ApiResponse<Void>> handleInsufficientStock(InsufficientStockException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                             .body(ApiResponse.of(HttpStatus.CONFLICT.value(), ex.getMessage(), false, null));
+    }
+
     @ExceptionHandler({
             MethodArgumentTypeMismatchException.class,
             MissingServletRequestParameterException.class,

@@ -31,13 +31,17 @@ public class ProductMapper {
                               .name(product.getName())
                               .price(product.getPrice())
                               .stock(product.getStock())
+                              .salesCount(product.getSalesCount())
                               .description(product.getDescription())
                               .jerseyType(product.getJerseyType()
                                                  .toString())
-                              .teamName(product.getTeam()
-                                               .getName())
-                              .season(product.getSeason()
-                                             .getName())
+                              .teamName(product.getTeam() == null ? "Unknown team" : product.getTeam().getName())
+                              .leagueName(product.getTeam() == null || product.getTeam().getLeague() == null
+                                      ? null
+                                      : product.getTeam().getLeague().getName())
+                              .season(product.getSeason() == null ? "Unknown season" : product.getSeason().getName())
+                              .createdAt(product.getCreatedAt())
+                              .updatedAt(product.getUpdatedAt())
                               .thumbnail(thumbnail)
                               .images(otherImages)
                               .build();
@@ -55,10 +59,10 @@ public class ProductMapper {
                                  .stock(product.getStock())
                                  .jerseyType(product.getJerseyType()
                                                     .toString())
-                                 .teamName(product.getTeam()
-                                                  .getName())
-                                 .season(product.getSeason()
-                                                .getName())
+                                 .teamName(product.getTeam() == null ? "Unknown team" : product.getTeam().getName())
+                                 .season(product.getSeason() == null ? "Unknown season" : product.getSeason().getName())
+                                 .createdAt(product.getCreatedAt())
+                                 .updatedAt(product.getUpdatedAt())
                                  .thumbnailUrl(thumbnailUrl)
                                  .build();
     }

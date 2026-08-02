@@ -2,12 +2,13 @@ package com.example.TheHeathensStore.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.UuidGenerator;
-import org.hibernate.annotations.UuidGenerator.*;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.sql.Types;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -43,6 +44,10 @@ public class Product {
 	@Column(nullable = false)
 	private Long stock;
 
+	@Builder.Default
+	@Column(name = "sales_count", nullable = false)
+	private Long salesCount = 0L;
+
 	@Column(columnDefinition = "TEXT")
 	private String description;
 
@@ -60,6 +65,15 @@ public class Product {
 
     @Column
     private boolean isActive;
+
+	@CreationTimestamp
+	@Column(name = "created_at", nullable = false, updatable = false)
+	private LocalDateTime createdAt;
+
+	@UpdateTimestamp
+	@Column(name = "updated_at", nullable = false)
+	private LocalDateTime updatedAt;
+
 	@PrePersist
 	protected void onCreate() {
 		if (this.uuid == null) {

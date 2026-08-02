@@ -41,26 +41,25 @@ public class FavoriteService {
                                                                                   .toMap(ProductImage::getProductId, productImage -> productImage)
                                                                           );
 
-        List<FavoriteItemResponse> cartItemResponses = favoriteItems.stream()
-                                                                    .map(cartItem -> {
-                                                                        return favoriteItemMapper.entityToResponse(cartItem, productThumbnails.get(cartItem.getProduct()
-                                                                                                                                                           .getId()));
-                                                                    })
-                                                                    .toList();
+        List<FavoriteItemResponse> favoriteItemResponses = favoriteItems.stream()
+                                                                        .map(favoriteItem -> favoriteItemMapper.entityToResponse(
+                                                                                favoriteItem,
+                                                                                productThumbnails.get(favoriteItem.getProduct()
+                                                                                                                  .getId())
+                                                                        ))
+                                                                        .toList();
         return FavoriteResponse.builder()
                                .userUuid(userUuid)
-                               .favoriteItems(cartItemResponses)
+                               .favoriteItems(favoriteItemResponses)
                                .build();
     }
 
     @Transactional
-    public FavoriteItemResponse addToFavorite(Long userId, UUID productUuid) {
+    public FavoriteResponse addToFavorite(Long userId, UUID userUuid, UUID productUuid) {
         if (productUuid == null) {
             throw new InvalidRequestException("productUuid is invalid");
         }
         Product product = findProduct(productUuid);
-        ProductImage productImage = productImageRepository.findByProductIdAndIsThumbnailTrue(product.getId())
-                                                          .orElse(null);
         FavoriteItem favoriteItem = favoriteItemRepository.findByUserIdAndProductId(userId, product.getId())
                                                            .orElse(null);
         if (favoriteItem == null) {
@@ -70,11 +69,11 @@ public class FavoriteService {
                                        .build();
             favoriteItemRepository.save(favoriteItem);
         }
-        return favoriteItemMapper.entityToResponse(favoriteItem, productImage);
+        return getFavorites(userId, userUuid);
     }
 
     @Transactional
-    public void deleteFromFavorite(Long userId, UUID productUuid) {
+    public FavoriteResponse deleteFromFavorite(Long userId, UUID userUuid, UUID productUuid) {
         if (productUuid == null) {
             throw new InvalidRequestException("productUuid is invalid");
         }
@@ -84,6 +83,7 @@ public class FavoriteService {
                                                                    "Product " + productUuid + " is not in favorite"
                                                            ));
         favoriteItemRepository.delete(favoriteItem);
+        return getFavorites(userId, userUuid);
     }
 
     private Product findProduct(UUID productUuid) {

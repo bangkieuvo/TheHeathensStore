@@ -1,4 +1,5 @@
 import type {Cart} from "../../../types/cart.ts";
+import {Link} from 'react-router-dom';
 
 interface CartPanelProps {
     cart: Cart | null;
@@ -39,10 +40,11 @@ const CartPanel: React.FC<CartPanelProps> = ({cart, isLoggedIn, isCartOpen, setI
                                             </div>
 
                                             <div className="header-cart-item-txt p-t-8">
-                                                <a href="assets/#"
+                                                <Link to={`/product-detail/${item.productInfo.uuid}`}
+                                                   onClick={() => setIsCartOpen(false)}
                                                    className="header-cart-item-name m-b-18 hov-cl1 trans-04">
                                                     {item.productInfo.name}
-                                                </a>
+                                                </Link>
 
                                                 <span className="header-cart-item-info">
                                                     {item.quantity} x {item.productInfo.price}$
@@ -57,15 +59,15 @@ const CartPanel: React.FC<CartPanelProps> = ({cart, isLoggedIn, isCartOpen, setI
                                     </div>
 
                                     <div className="header-cart-buttons flex-w w-full">
-                                        <a href="assets/shoping-cart.html"
+                                        <Link to="/cart" onClick={() => setIsCartOpen(false)}
                                            className="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-r-8 m-b-10">
                                             View Cart
-                                        </a>
+                                        </Link>
 
-                                        <a href="assets/shoping-cart.html"
+                                        <Link to="/checkout" onClick={() => setIsCartOpen(false)}
                                            className="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-b-10">
                                             Check Out
-                                        </a>
+                                        </Link>
                                     </div>
                                 </div>
                             </>
