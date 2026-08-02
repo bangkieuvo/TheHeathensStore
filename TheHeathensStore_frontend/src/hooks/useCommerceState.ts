@@ -210,22 +210,15 @@ export const useCommerceState = (): CommerceState => {
         }
         cartPendingRef.current.add(productUuid);
         setCartPendingUuids(new Set(cartPendingRef.current));
-
-        const mutation = cartMutationQueueRef.current.then(async () => {
+        try {
             const updatedCart = await updateCartItem(productUuid, quantity);
             setCart(updatedCart);
             setActionError('');
-        });
-        cartMutationQueueRef.current = mutation.catch(() => undefined);
-
-        try {
-            await mutation;
         } catch (error) {
             if (!handleAuthenticationFailure(error)) {
-                const message = getRequestErrorMessage(error, 'Unable to update cart item.');
-                setActionError(message);
-                throw new Error(message);
+                setActionError(getRequestErrorMessage(error, 'Unable to update cart item.'));
             }
+            throw error;
         } finally {
             cartPendingRef.current.delete(productUuid);
             setCartPendingUuids(new Set(cartPendingRef.current));
@@ -238,22 +231,15 @@ export const useCommerceState = (): CommerceState => {
         }
         cartPendingRef.current.add(productUuid);
         setCartPendingUuids(new Set(cartPendingRef.current));
-
-        const mutation = cartMutationQueueRef.current.then(async () => {
+        try {
             const updatedCart = await deleteCartItem(productUuid);
             setCart(updatedCart);
             setActionError('');
-        });
-        cartMutationQueueRef.current = mutation.catch(() => undefined);
-
-        try {
-            await mutation;
         } catch (error) {
             if (!handleAuthenticationFailure(error)) {
-                const message = getRequestErrorMessage(error, 'Unable to remove cart item.');
-                setActionError(message);
-                throw new Error(message);
+                setActionError(getRequestErrorMessage(error, 'Unable to remove cart item.'));
             }
+            throw error;
         } finally {
             cartPendingRef.current.delete(productUuid);
             setCartPendingUuids(new Set(cartPendingRef.current));
