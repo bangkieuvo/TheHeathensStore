@@ -28,6 +28,7 @@ const HomeProductCard = ({product, commerce, onQuickView}: Props) => {
   const hasThumbnail = Boolean(productThumbnailUrl);
   const thumbnailUrl = productThumbnailUrl || NO_IMAGE_AVAILABLE_URL;
   const isFavorite = commerce.isFavorite(product.uuid);
+  const isInCart = commerce.isInCart(product.uuid);
   const isFavoriteLoading = commerce.isFavoritePending(product.uuid);
   const isCartLoading = commerce.isCartPending(product.uuid);
   const isAuthenticationLoading = commerce.authStatus === 'loading';
@@ -35,11 +36,21 @@ const HomeProductCard = ({product, commerce, onQuickView}: Props) => {
 
   const handleFavoriteClick = (event: MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
+
+    if (isAuthenticationLoading || isFavoriteLoading) {
+      return;
+    }
+
     void commerce.toggleFavorite(product.uuid);
   };
 
   const handleAddToCartClick = (event: MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
+
+    if (isAuthenticationLoading || isCartLoading || isOutOfStock) {
+      return;
+    }
+
     void commerce.addProductToCart(product.uuid);
   };
 
@@ -84,30 +95,32 @@ const HomeProductCard = ({product, commerce, onQuickView}: Props) => {
           <div className="block2-txt-child2 product-card-actions flex-r p-t-3">
             <button
               type="button"
-              className={`product-card-action${isFavorite ? ' is-active' : ''}`}
+              className={`product-card-action${isFavorite ? ' is-active' : ''}${isFavoriteLoading ? ' is-pending' : ''}`}
               onClick={handleFavoriteClick}
-              disabled={isAuthenticationLoading || isFavoriteLoading}
+              disabled={isAuthenticationLoading}
+              aria-disabled={isAuthenticationLoading || isFavoriteLoading}
               aria-label={isFavorite ? `Remove ${product.name} from favorites` : `Add ${product.name} to favorites`}
               aria-pressed={isFavorite}
               aria-busy={isFavoriteLoading}
               title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
             >
               <i
-                className={`zmdi ${isFavoriteLoading ? 'zmdi-refresh zmdi-hc-spin' : isFavorite ? 'zmdi-favorite' : 'zmdi-favorite-outline'}`}
+                className={`zmdi ${isFavorite ? 'zmdi-favorite' : 'zmdi-favorite-outline'}`}
                 aria-hidden="true"
               ></i>
             </button>
             <button
               type="button"
-              className="product-card-action"
+              className={`product-card-action${isInCart ? ' is-in-cart' : ''}${isCartLoading ? ' is-pending' : ''}`}
               onClick={handleAddToCartClick}
-              disabled={isAuthenticationLoading || isCartLoading || isOutOfStock}
-              aria-label={`Add ${product.name} to cart`}
+              disabled={isAuthenticationLoading || isOutOfStock}
+              aria-disabled={isAuthenticationLoading || isCartLoading || isOutOfStock}
+              aria-label={isInCart ? `Add another ${product.name} to cart` : `Add ${product.name} to cart`}
               aria-busy={isCartLoading}
-              title={isOutOfStock ? 'Out of stock' : 'Add to cart'}
+              title={isOutOfStock ? 'Out of stock' : isInCart ? 'In cart — add another' : 'Add to cart'}
             >
               <i
-                className={`zmdi ${isCartLoading ? 'zmdi-refresh zmdi-hc-spin' : 'zmdi-shopping-cart-plus'}`}
+                className="zmdi zmdi-shopping-cart-plus"
                 aria-hidden="true"
               ></i>
             </button>

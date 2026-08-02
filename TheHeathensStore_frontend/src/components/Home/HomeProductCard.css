@@ -51,6 +51,7 @@
 }
 
 .home-product-card .product-card-action {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -66,6 +67,16 @@
   transition: color 160ms ease, border-color 160ms ease, background-color 160ms ease;
 }
 
+.home-product-card .product-card-action > i {
+  display: inline-flex;
+  width: 18px;
+  height: 18px;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  transition: opacity 120ms ease;
+}
+
 .home-product-card .product-card-action:hover:not(:disabled),
 .home-product-card .product-card-action:focus-visible,
 .home-product-card .product-card-action.is-active {
@@ -79,7 +90,48 @@
   outline-offset: 2px;
 }
 
+.home-product-card .product-card-action.is-in-cart {
+  border-color: #2f9e6f;
+  background: #edf8f3;
+  color: #27865e;
+}
+
+.home-product-card .product-card-action.is-pending {
+  border-color: #c7cdf5;
+  background: #f5f6ff;
+  color: #717fe0;
+  cursor: default;
+  pointer-events: none;
+}
+
+.home-product-card .product-card-action.is-pending > i {
+  opacity: 0;
+}
+
+.home-product-card .product-card-action.is-pending::after {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  content: '';
+  animation: product-card-action-spin 650ms linear infinite;
+}
+
 .home-product-card .product-card-action:disabled {
-  cursor: not-allowed;
+  cursor: default;
   opacity: 0.55;
+}
+
+@keyframes product-card-action-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-product-card .product-card-action.is-pending::after {
+    animation-duration: 1200ms;
+  }
 }

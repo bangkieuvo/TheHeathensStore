@@ -74,6 +74,7 @@ const ProductDetail = () => {
     const activeImage = images[Math.min(activeImageIndex, images.length - 1)];
     const isOutOfStock = product.stock <= 0;
     const isCartPending = commerce.isCartPending(product.uuid);
+    const isInCart = commerce.isInCart(product.uuid);
     const isFavorite = commerce.isFavorite(product.uuid);
 
     const addToCart = async () => {
@@ -162,7 +163,7 @@ const ProductDetail = () => {
                                             <i className="fs-16 zmdi zmdi-plus"/>
                                         </button>
                                     </div>
-                                    <button className="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 m-r-8"
+                                    <button className={`product-detail-add-cart flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 m-r-8${isInCart ? ' is-in-cart' : ''}`}
                                             type="button" disabled={isOutOfStock || isSubmitting || isCartPending} onClick={addToCart}>
                                         {isCartPending ? 'Adding...' : 'Add to cart'}
                                     </button>

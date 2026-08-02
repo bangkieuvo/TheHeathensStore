@@ -38,6 +38,8 @@ const Header = ({cart, favorite, user, authStatus}: HeaderProps) => {
 
     const cartItemCount = cart?.cartItems.reduce((total, item) => total + item.quantity, 0) ?? 0;
     const favoriteItemCount = favorite?.favoriteItems.length ?? 0;
+    const accountName = user?.fullName?.trim() || user?.username || "My Account";
+    const isAuthenticated = authStatus === "authenticated" && user !== null;
 
     return (
         <>
@@ -47,15 +49,15 @@ const Header = ({cart, favorite, user, authStatus}: HeaderProps) => {
                              setIsSearchOpen={setIsSearchOpen}
                              cartItemCount={cartItemCount}
                              favoriteItemCount={favoriteItemCount}
-                             accountName={user?.fullName ?? "My Account"}
-                             isUnauthenticated={authStatus === "unauthenticated"}/>
+                             accountName={accountName}
+                             isAuthenticated={isAuthenticated}/>
                 <MenuMobile setIsCartOpen={setIsCartOpen}
                             setIsFavoriteOpen={setIsFavoriteOpen}
                             setIsSearchOpen={setIsSearchOpen}
                             cartItemCount={cartItemCount}
                             favoriteItemCount={favoriteItemCount}
-                            accountName={user?.fullName ?? "My Account"}
-                            isUnauthenticated={authStatus === "unauthenticated"}/>
+                            accountName={accountName}
+                            isAuthenticated={isAuthenticated}/>
                 <CartPanel cart={cart} isLoggedIn={user !== null} isCartOpen={isCartOpen} setIsCartOpen={setIsCartOpen}/>
                 <FavoritePanel favorite={favorite} isLoggedIn={user !== null} isFavoriteOpen={isFavoriteOpen} setIsFavoriteOpen={setIsFavoriteOpen}/>
                 <ModalSearch isSearchOpen={isSearchOpen} setIsSearchOpen={setIsSearchOpen}/>

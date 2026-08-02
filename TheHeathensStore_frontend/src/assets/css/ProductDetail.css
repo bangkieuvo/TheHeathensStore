@@ -58,6 +58,16 @@
   background: transparent;
 }
 
+.product-detail-add-cart.is-in-cart {
+  border-color: #2f9e6f;
+  background: #2f9e6f;
+}
+
+.product-detail-add-cart.is-in-cart:hover {
+  border-color: #27865e;
+  background: #27865e;
+}
+
 .product-detail-wishlist {
   margin-top: 22px;
   border: 0;

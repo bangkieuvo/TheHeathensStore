@@ -10,10 +10,10 @@ interface MenuMobileProps {
     cartItemCount: number;
     favoriteItemCount: number;
     accountName: string;
-    isUnauthenticated: boolean;
+    isAuthenticated: boolean;
 }
 
-const MenuMobile = ({setIsCartOpen, setIsFavoriteOpen, setIsSearchOpen, cartItemCount, favoriteItemCount, accountName, isUnauthenticated}: MenuMobileProps) => {
+const MenuMobile = ({setIsCartOpen, setIsFavoriteOpen, setIsSearchOpen, cartItemCount, favoriteItemCount, accountName, isAuthenticated}: MenuMobileProps) => {
     const [isOpen, setIsOpen] = useState(false);
     const {pathname} = useLocation();
     return (
@@ -28,8 +28,15 @@ const MenuMobile = ({setIsCartOpen, setIsFavoriteOpen, setIsSearchOpen, cartItem
                 </div>
             </div>
             <nav className={`mobile-navigation ${isOpen ? 'is-open' : ''}`} aria-label="Mobile navigation">
+                <Link className="mobile-account-card" to={isAuthenticated ? '/my-account' : '/login'} onClick={() => setIsOpen(false)}>
+                    <span className="mobile-account-avatar" aria-hidden="true"><i className="fa fa-user"/></span>
+                    <span className="mobile-account-copy">
+                        <small>{isAuthenticated ? 'My account' : 'Welcome'}</small>
+                        <strong>{isAuthenticated ? accountName : 'Login or register'}</strong>
+                    </span>
+                    <i className="fa fa-angle-right mobile-account-arrow" aria-hidden="true"/>
+                </Link>
                 <ul>{MAIN_MENU_ITEMS.map((item) => <li key={item.path}><Link className={pathname === item.path ? 'is-active' : ''} to={item.path} onClick={() => setIsOpen(false)}>{item.label}</Link></li>)}</ul>
-                <Link className="mobile-account-link" to={isUnauthenticated ? '/login' : '/my-account'} onClick={() => setIsOpen(false)}><i className="fa fa-user"/> {isUnauthenticated ? 'Login or register' : accountName}</Link>
             </nav>
         </>
     );
