@@ -2,11 +2,14 @@ package com.example.TheHeathensStore.config;
 
 import com.example.TheHeathensStore.security.JwtAuthenticationEntryPoint;
 import com.example.TheHeathensStore.security.JwtAuthenticationFilter;
+import com.example.TheHeathensStore.security.JsonAccessDeniedHandler;
+import com.example.TheHeathensStore.security.StoreAuthorities;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -25,9 +28,12 @@ import java.util.List;
 public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final JsonAccessDeniedHandler jsonAccessDeniedHandler;
 
     @Value("${API_URL}")
     private String apiUrl;
+    @Value("${app.cors.allowed-origins:http://localhost:5173,http://127.0.0.1:5173}")
+    private List<String> allowedOrigins;
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -35,6 +41,9 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(apiUrl + "/public/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, apiUrl + "/admin/staff").hasAuthority(StoreAuthorities.ACCESS_MANAGEMENT)
+                        .requestMatchers(apiUrl + "/admin/staff", apiUrl + "/admin/staff/**").hasAuthority(StoreAuthorities.MANAGE_STAFF)
+                        .requestMatchers(apiUrl + "/admin/**").hasAuthority(StoreAuthorities.ACCESS_MANAGEMENT)
                         .anyRequest()
                         .authenticated()
                 )
@@ -45,6 +54,7 @@ public class SecurityConfig {
                 .exceptionHandling(
                         ex ->
                                 ex.authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                                  .accessDeniedHandler(jsonAccessDeniedHandler)
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.getOrBuild();
@@ -53,7 +63,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
+        configuration.setAllowedOrigins(allowedOrigins.stream().map(String::trim).toList());
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);

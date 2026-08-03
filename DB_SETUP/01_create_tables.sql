@@ -174,6 +174,7 @@ CREATE TABLE orders (
     recipient_name VARCHAR(100) NOT NULL,
     recipient_phone VARCHAR(20) NOT NULL,
     shipping_address VARCHAR(500) NOT NULL,
+    internal_note VARCHAR(1000),
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
@@ -229,4 +230,29 @@ CREATE TABLE order_items (
     CONSTRAINT chk_order_items_quantity CHECK (quantity > 0),
     CONSTRAINT chk_order_items_unit_price CHECK (unit_price >= 0),
     CONSTRAINT chk_order_items_line_total CHECK (line_total >= 0)
+);
+
+CREATE TABLE store_settings (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    setting_key VARCHAR(100) NOT NULL UNIQUE,
+    setting_value TEXT NOT NULL,
+    description VARCHAR(500),
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE admin_records (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    uuid BINARY(16) NOT NULL UNIQUE,
+    record_type ENUM('PROMOTION','BANNER','BLOG','EMAIL_TEMPLATE') NOT NULL,
+    record_key VARCHAR(120) NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    content TEXT,
+    record_value VARCHAR(500),
+    active BOOLEAN NOT NULL DEFAULT TRUE,
+    starts_at TIMESTAMP NULL,
+    ends_at TIMESTAMP NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_admin_records_type_active (record_type, active)
 );

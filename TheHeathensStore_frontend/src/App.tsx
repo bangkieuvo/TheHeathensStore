@@ -10,6 +10,7 @@ import Home from "./page/Home.tsx";
 import ProductDetail from "./page/ProductDetail.tsx";
 import Shop from "./page/Shop.tsx";
 import Cart from './page/Cart.tsx';
+import Admin from './page/Admin.tsx';
 import Checkout from './page/Checkout.tsx';
 import MyAccount from './page/MyAccount.tsx';
 import Contact from './page/Contact.tsx';
@@ -55,6 +56,7 @@ const App = () => {
                         <Route path="cart" element={<Cart/>}/>
                         <Route path="checkout" element={<Checkout/>}/>
                         <Route path="my-account" element={<MyAccount/>}/>
+                        <Route path="admin" element={<Admin/>}/>
                         <Route path="about" element={<About/>}/>
                         <Route path="contact" element={<Contact/>}/>
                         <Route path="faq" element={<Faq/>}/>

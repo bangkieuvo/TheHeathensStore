@@ -1,7 +1,7 @@
 import {BACKEND_PRODUCT_URL} from "../util/constants.ts";
 import type {Product} from "../types/product.ts";
 import type {Page} from "../types/generic/page.ts";
-import axios from "axios";
+import {apiClient} from './apiClient.ts';
 import type {ApiResponse} from "../types/generic/apiResponse.ts";
 
 const API_URL = BACKEND_PRODUCT_URL;
@@ -37,17 +37,17 @@ export const getShopProducts = async (query: number | ShopProductQuery = 1): Pro
             params.set(key, String(value));
         }
     });
-    const response = await axios.get<ApiResponse<Page<Product>>>(`${API_URL}?${params.toString()}`);
+    const response = await apiClient.get<ApiResponse<Page<Product>>>(`${API_URL}?${params.toString()}`);
     return unwrap(response.data);
 }
 
 export const getProduct = async (uuid: string): Promise<Product> => {
-    const response = await axios.get<ApiResponse<Product>>(`${API_URL}/${uuid}`);
+    const response = await apiClient.get<ApiResponse<Product>>(`${API_URL}/${uuid}`);
     return unwrap(response.data);
 };
 
 export const getRelatedProducts = async (uuid: string): Promise<Product[]> => {
-    const response = await axios.get<ApiResponse<Product[]>>(`${API_URL}/${uuid}/related`);
+    const response = await apiClient.get<ApiResponse<Product[]>>(`${API_URL}/${uuid}/related`);
     return unwrap(response.data);
 };
 
@@ -56,6 +56,6 @@ export const getProductSuggestions = async (keyword: string, limit = 5): Promise
         return [];
     }
     const params = new URLSearchParams({keyword: keyword.trim(), limit: String(limit)});
-    const response = await axios.get<ApiResponse<Product[]>>(`${API_URL}/suggestions?${params.toString()}`);
+    const response = await apiClient.get<ApiResponse<Product[]>>(`${API_URL}/suggestions?${params.toString()}`);
     return unwrap(response.data);
 }

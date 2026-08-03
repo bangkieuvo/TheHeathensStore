@@ -2,7 +2,7 @@ import {type FormEvent, useEffect, useMemo, useState} from 'react';
 import {Link, useOutletContext} from 'react-router-dom';
 import type {CommerceState} from '../hooks/useCommerceState.ts';
 import {getShippingAddresses} from '../service/accountService.ts';
-import {createOrder} from '../service/orderService.ts';
+import {createOrder, getStoreSettings} from '../service/orderService.ts';
 import {getCart} from '../service/cartService.ts';
 import type {ShippingAddress} from '../types/address.ts';
 import type {Order, ShippingMethod} from '../types/order.ts';
@@ -19,6 +19,9 @@ const Checkout = () => {
     const [createdOrder, setCreatedOrder] = useState<Order | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const [standardShippingFee, setStandardShippingFee] = useState(5);
+    const [expressShippingFee, setExpressShippingFee] = useState(15);
+    const [freeShippingThreshold, setFreeShippingThreshold] = useState(100);
 
     useEffect(() => {
         if (commerce.user) {
@@ -37,8 +40,16 @@ const Checkout = () => {
         }
     }, [commerce.user]);
 
+    useEffect(() => {
+        getStoreSettings().then((settings) => {
+            setStandardShippingFee(Number(settings['shipping.standard_fee'] ?? 5));
+            setExpressShippingFee(Number(settings['shipping.express_fee'] ?? 15));
+            setFreeShippingThreshold(Number(settings['shipping.free_threshold'] ?? 100));
+        }).catch(() => undefined);
+    }, []);
+
     const subtotal = commerce.cart?.cartTotal ?? 0;
-    const shippingFee = shippingMethod === 'EXPRESS' ? 15 : subtotal >= 100 ? 0 : 5;
+    const shippingFee = shippingMethod === 'EXPRESS' ? expressShippingFee : subtotal >= freeShippingThreshold ? 0 : standardShippingFee;
     const total = useMemo(() => subtotal + shippingFee, [shippingFee, subtotal]);
 
     if (commerce.authStatus === 'loading') return <div className="container commerce-empty-state">Loading checkout...</div>;
@@ -93,8 +104,8 @@ const Checkout = () => {
                             <div className="p-b-20"><label htmlFor="checkout-phone">Phone</label><input id="checkout-phone" className="form-control" value={recipientPhone} onChange={(event) => setRecipientPhone(event.target.value)} required maxLength={20}/></div>
                             <div className="p-b-20"><label htmlFor="checkout-address">Address</label><textarea id="checkout-address" className="form-control" value={shippingAddress} onChange={(event) => setShippingAddress(event.target.value)} required maxLength={500}/></div>
                             <h3 className="mtext-106 p-b-10">Shipping method</h3>
-                            <label className="checkout-option"><input type="radio" name="shipping" checked={shippingMethod === 'STANDARD'} onChange={() => setShippingMethod('STANDARD')}/> Standard — {subtotal >= 100 ? 'Free' : '$5.00'}</label>
-                            <label className="checkout-option"><input type="radio" name="shipping" checked={shippingMethod === 'EXPRESS'} onChange={() => setShippingMethod('EXPRESS')}/> Express — $15.00</label>
+                            <label className="checkout-option"><input type="radio" name="shipping" checked={shippingMethod === 'STANDARD'} onChange={() => setShippingMethod('STANDARD')}/> Standard — {subtotal >= freeShippingThreshold ? 'Free' : formatPrice(standardShippingFee)}</label>
+                            <label className="checkout-option"><input type="radio" name="shipping" checked={shippingMethod === 'EXPRESS'} onChange={() => setShippingMethod('EXPRESS')}/> Express — {formatPrice(expressShippingFee)}</label>
                             <h3 className="mtext-106 p-t-25 p-b-10">Payment</h3><label className="checkout-option"><input type="radio" checked readOnly/> Cash on delivery (COD)</label>
                         </div>
                     </div>

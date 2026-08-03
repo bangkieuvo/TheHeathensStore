@@ -11,6 +11,7 @@ interface MenuDesktopProps {
     favoriteItemCount: number;
     accountName: string;
     isAuthenticated: boolean;
+    hasManagementAccess: boolean;
 }
 
 const MenuDesktop: React.FC<MenuDesktopProps> = ({
@@ -21,6 +22,7 @@ const MenuDesktop: React.FC<MenuDesktopProps> = ({
     favoriteItemCount,
     accountName,
     isAuthenticated,
+    hasManagementAccess,
 }) => {
     const {pathname} = useLocation();
     const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
@@ -54,6 +56,11 @@ const MenuDesktop: React.FC<MenuDesktopProps> = ({
                                         <Link to={path}>{label}</Link>
                                     </li>
                                 ))}
+                                {hasManagementAccess && (
+                                    <li className={pathname.startsWith('/admin') ? 'active-menu' : undefined}>
+                                        <Link to="/admin">Management</Link>
+                                    </li>
+                                )}
                             </ul>
                         </div>
 

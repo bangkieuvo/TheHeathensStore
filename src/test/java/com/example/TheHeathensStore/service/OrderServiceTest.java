@@ -11,6 +11,7 @@ import com.example.TheHeathensStore.mapper.OrderMapper;
 import com.example.TheHeathensStore.repository.CartItemRepository;
 import com.example.TheHeathensStore.repository.OrderRepository;
 import com.example.TheHeathensStore.repository.ProductRepository;
+import com.example.TheHeathensStore.repository.StoreSettingRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -38,6 +39,9 @@ class OrderServiceTest {
 
     @Mock
     private ProductRepository productRepository;
+
+    @Mock
+    private StoreSettingRepository storeSettingRepository;
 
     @Mock
     private CartItemRepository cartItemRepository;
@@ -169,7 +173,7 @@ class OrderServiceTest {
     }
 
     private OrderService service() {
-        return new OrderService(orderRepository, productRepository, cartItemRepository, orderMapper, cartService);
+        return new OrderService(orderRepository, productRepository, cartItemRepository, orderMapper, cartService, storeSettingRepository);
     }
 
     private CreateOrderRequest request(UUID productUuid, Long quantity) {

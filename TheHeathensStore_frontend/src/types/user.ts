@@ -1,11 +1,13 @@
 export interface LoginUser {
     username: string,
     password: string,
+    rememberMe: boolean,
 }
-export const createLoginUser = (username: string, password: string): LoginUser => (
+export const createLoginUser = (username: string, password: string, rememberMe = false): LoginUser => (
     {
         username,
-        password
+        password,
+        rememberMe,
     }
 );
 
@@ -43,4 +45,9 @@ export interface UserResponse {
     email: string;
     phone: string;
     address: string;
+    roles?: string[];
 }
+
+export const hasRole = (user: UserResponse | null, role: string): boolean => user?.roles?.includes(role) ?? false;
+export const canManageStore = (user: UserResponse | null): boolean => hasRole(user, 'ADMIN') || hasRole(user, 'STAFF');
+export const canManageStaff = (user: UserResponse | null): boolean => hasRole(user, 'ADMIN');

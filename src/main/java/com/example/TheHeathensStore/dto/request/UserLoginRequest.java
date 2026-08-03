@@ -15,5 +15,6 @@ public class UserLoginRequest {
     private String username;
     @NotBlank(message = "Password can't be blank")
     private String password;
+    private boolean rememberMe;
 
 }

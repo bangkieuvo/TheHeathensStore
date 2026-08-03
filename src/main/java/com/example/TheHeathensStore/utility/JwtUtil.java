@@ -18,6 +18,8 @@ public class JwtUtil {
     private String JWT_SECRET;
     @Value("${jwt.expiration}")
     private Long JWT_EXPIRATION_TIME;
+    @Value("${jwt.remember-expiration:2592000000}")
+    private Long JWT_REMEMBER_EXPIRATION_TIME;
 
     private Key getSigningKey() {
         byte[] keyBytes = Decoders.BASE64.decode(JWT_SECRET);
@@ -25,11 +27,19 @@ public class JwtUtil {
     }
 
     public String generateToken(String username) {
+        return generateToken(username, JWT_EXPIRATION_TIME);
+    }
+
+    public String generateToken(String username, boolean rememberMe) {
+        return generateToken(username, rememberMe ? JWT_REMEMBER_EXPIRATION_TIME : JWT_EXPIRATION_TIME);
+    }
+
+    private String generateToken(String username, long expirationTime) {
         return Jwts.builder()
                    .setSubject(username)
                    .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                    .setIssuedAt(new Date())
-                   .setExpiration(new Date(System.currentTimeMillis() + JWT_EXPIRATION_TIME))
+                   .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
                    .compact();
     }
 

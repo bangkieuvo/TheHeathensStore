@@ -15,5 +15,6 @@ public class CartItemResponse {
     private Long id;
     private ProductResponseMin productInfo;
     private Long quantity;
-    private BigDecimal subTotal =  BigDecimal.ZERO;
+    @Builder.Default
+    private BigDecimal subTotal = BigDecimal.ZERO;
 }

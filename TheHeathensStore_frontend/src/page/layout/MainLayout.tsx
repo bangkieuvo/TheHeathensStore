@@ -15,6 +15,10 @@ const MainLayout = () => {
                 favorite={commerce.favorite}
                 user={commerce.user}
                 authStatus={commerce.authStatus}
+                removeCartItem={commerce.removeCartItem}
+                removeFavoriteItem={commerce.toggleFavorite}
+                isCartItemPending={commerce.isCartPending}
+                isFavoriteItemPending={commerce.isFavoritePending}
             />
             {commerce.actionError && (
                 <div className="container p-t-15">

@@ -15,6 +15,8 @@ import com.example.TheHeathensStore.mapper.UserMapper;
 import com.example.TheHeathensStore.repository.UserInfoRepository;
 import com.example.TheHeathensStore.repository.UserRepository;
 import com.example.TheHeathensStore.repository.ShippingAddressRepository;
+import com.example.TheHeathensStore.repository.AdminRepository;
+import com.example.TheHeathensStore.repository.StaffRepository;
 import com.example.TheHeathensStore.exception.ResourceNotFoundException;
 import com.example.TheHeathensStore.utility.BCryptHasher;
 import jakarta.transaction.Transactional;
@@ -24,6 +26,8 @@ import org.springframework.stereotype.Service;
 import java.util.UUID;
 import java.util.List;
 import java.util.Locale;
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -33,18 +37,20 @@ public class UserService {
     private final UserInfoRepository userInfoRepository;
     private final BCryptHasher bCryptHasher;
     private final ShippingAddressRepository shippingAddressRepository;
+    private final AdminRepository adminRepository;
+    private final StaffRepository staffRepository;
 
     public UserResponse getById(Long id) {
         return this.userRepository.findById(id)
-                                  .map(user -> userMapper.entityToResponse(user, userInfoRepository.findByUserId(user.getId())
-                                                                                                   .orElse(null)))
+                                  .map(user -> withRoles(userMapper.entityToResponse(user, userInfoRepository.findByUserId(user.getId())
+                                                                                                             .orElse(null)), user.getId()))
                                   .orElse(null);
     }
 
     public UserResponse getByUuid(UUID uuid) {
         return this.userRepository.findByUuid(uuid)
-                                  .map(user -> userMapper.entityToResponse(user, userInfoRepository.findByUserId(user.getId())
-                                                                                                   .orElse(null)))
+                                  .map(user -> withRoles(userMapper.entityToResponse(user, userInfoRepository.findByUserId(user.getId())
+                                                                                                             .orElse(null)), user.getId()))
                                   .orElse(null);
     }
 
@@ -67,7 +73,7 @@ public class UserService {
                                     .address(userRegisterRequest.getAddress() == null ? "" : userRegisterRequest.getAddress().trim())
                                     .build();
         userInfoRepository.save(userInfo);
-        return userMapper.entityToResponse(user, userInfo);
+        return withRoles(userMapper.entityToResponse(user, userInfo), user.getId());
     }
 
     @Transactional
@@ -83,7 +89,7 @@ public class UserService {
         userInfo.setPhone(normalizeNullable(request.phone()));
         userInfo.setAddress(request.address() == null ? "" : request.address().trim());
         userInfoRepository.save(userInfo);
-        return userMapper.entityToResponse(user, userInfo);
+        return withRoles(userMapper.entityToResponse(user, userInfo), user.getId());
     }
 
     @Transactional
@@ -171,6 +177,15 @@ public class UserService {
 
     private String normalizeNullable(String value) {
         return value == null || value.isBlank() ? null : value.trim();
+    }
+
+    private UserResponse withRoles(UserResponse response, Long userId) {
+        Set<String> roles = new HashSet<>();
+        if (adminRepository.existsByUserId(userId)) roles.add("ADMIN");
+        if (staffRepository.existsByUserId(userId)) roles.add("STAFF");
+        if (roles.isEmpty()) roles.add("USER");
+        response.setRoles(roles);
+        return response;
     }
 
 

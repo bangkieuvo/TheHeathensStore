@@ -76,6 +76,7 @@ const Shop = () => {
     const [totalPages, setTotalPages] = useState(1);
     const [totalElements, setTotalElements] = useState(0);
     const [activeTeam, setActiveTeam] = useState(searchParams.get('teamName') || 'All');
+    const [activeLeague, setActiveLeague] = useState(searchParams.get('leagueName') || 'All');
     const [activeSeason, setActiveSeason] = useState(searchParams.get('seasonName') || 'All');
     const [activeJerseyType, setActiveJerseyType] = useState(searchParams.get('jerseyType') || 'All');
     const [sortBy, setSortBy] = useState<SortOption>((searchParams.get('sort') as SortOption) || 'newest');
@@ -97,6 +98,7 @@ const Shop = () => {
                     page: pageNumber,
                     keyword: searchTerm.trim() || undefined,
                     teamName: activeTeam === 'All' ? undefined : activeTeam,
+                    leagueName: activeLeague === 'All' ? undefined : activeLeague,
                     seasonName: activeSeason === 'All' ? undefined : activeSeason,
                     jerseyType: activeJerseyType === 'All' ? undefined : activeJerseyType,
                     minPrice: minPrice === '' ? undefined : Number(minPrice),
@@ -131,7 +133,7 @@ const Shop = () => {
         return () => {
             isMounted = false;
         };
-    }, [activeJerseyType, activeSeason, activeTeam, maxPrice, minPrice, pageNumber, searchTerm, sortBy]);
+    }, [activeJerseyType, activeLeague, activeSeason, activeTeam, maxPrice, minPrice, pageNumber, searchTerm, sortBy]);
 
     useEffect(() => {
         const incomingKeyword = searchParams.get('keyword') || '';
@@ -139,6 +141,7 @@ const Shop = () => {
     }, [searchParams, searchTerm]);
 
     const teams = useMemo(() => ['All', ...Array.from(new Set(products.map((product) => product.teamName)))], [products]);
+    const leagues = useMemo(() => ['All', ...Array.from(new Set(products.map((product) => product.leagueName).filter((league): league is string => Boolean(league))))], [products]);
     const seasons = useMemo(() => ['All', ...Array.from(new Set(products.map((product) => product.season))).sort().reverse()], [products]);
     const jerseyTypes = useMemo(() => ['All', ...Array.from(new Set(products.map((product) => product.jerseyType)))], [products]);
 
@@ -186,6 +189,7 @@ const Shop = () => {
 
     const resetFilters = () => {
         setActiveTeam('All');
+        setActiveLeague('All');
         setActiveSeason('All');
         setActiveJerseyType('All');
         setSortBy('newest');
@@ -195,9 +199,20 @@ const Shop = () => {
         setSearchParams({});
     };
 
-    const selectFilter = (setter: (value: string) => void, value: string) => {
+    const updateFilterParam = (param: string, value: string) => {
+        const nextSearchParams = new URLSearchParams(searchParams);
+        if (!value || value === 'All' || (param === 'sort' && value === 'newest')) {
+            nextSearchParams.delete(param);
+        } else {
+            nextSearchParams.set(param, value);
+        }
+        nextSearchParams.delete('page');
+        setSearchParams(nextSearchParams);
+    };
+
+    const selectFilter = (setter: (value: string) => void, value: string, param: string) => {
         setter(value);
-        navigateToPage(1);
+        updateFilterParam(param, value);
     };
 
     const commitPageInput = () => {
@@ -236,7 +251,7 @@ const Shop = () => {
                                     key={team}
                                     className={`stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 ${activeTeam === team ? 'how-active1' : ''}`}
                                     type="button"
-                                    onClick={() => selectFilter(setActiveTeam, team)}
+                                    onClick={() => selectFilter(setActiveTeam, team, 'teamName')}
                                 >
                                     {team === 'All' ? 'All Products' : team}
                                 </button>
@@ -306,7 +321,7 @@ const Shop = () => {
                                                     className={`filter-link stext-106 trans-04 ${sortBy === option.value ? 'filter-link-active' : ''}`}
                                                     onClick={() => {
                                                         setSortBy(option.value);
-                                                        navigateToPage(1);
+                                                        updateFilterParam('sort', option.value);
                                                     }}
                                                 >
                                                     {option.label}
@@ -317,6 +332,22 @@ const Shop = () => {
                                 </div>
 
                                 <div className="filter-col2 p-r-15 p-b-27">
+                                    <div className="mtext-102 cl2 p-b-15">League</div>
+
+                                    <ul className="p-b-20">
+                                        {leagues.map((league) => (
+                                            <li key={league} className="p-b-6">
+                                                <button
+                                                    type="button"
+                                                    className={`filter-link stext-106 trans-04 ${activeLeague === league ? 'filter-link-active' : ''}`}
+                                                    onClick={() => selectFilter(setActiveLeague, league, 'leagueName')}
+                                                >
+                                                    {league}
+                                                </button>
+                                            </li>
+                                        ))}
+                                    </ul>
+
                                     <div className="mtext-102 cl2 p-b-15">Season</div>
 
                                     <ul>
@@ -325,7 +356,7 @@ const Shop = () => {
                                                 <button
                                                     type="button"
                                                     className={`filter-link stext-106 trans-04 ${activeSeason === season ? 'filter-link-active' : ''}`}
-                                                    onClick={() => selectFilter(setActiveSeason, season)}
+                                                    onClick={() => selectFilter(setActiveSeason, season, 'seasonName')}
                                                 >
                                                     {season}
                                                 </button>
@@ -343,7 +374,7 @@ const Shop = () => {
                                                 <button
                                                     type="button"
                                                     className={`filter-link stext-106 trans-04 ${activeJerseyType === jerseyType ? 'filter-link-active' : ''}`}
-                                                    onClick={() => selectFilter(setActiveJerseyType, jerseyType)}
+                                                    onClick={() => selectFilter(setActiveJerseyType, jerseyType, 'jerseyType')}
                                                 >
                                                     {jerseyType === 'All' ? 'All' : getJerseyTypeLabel(jerseyType)}
                                                 </button>
@@ -360,7 +391,7 @@ const Shop = () => {
                                                placeholder="Minimum" value={minPrice}
                                                onChange={(event) => {
                                                    setMinPrice(event.target.value);
-                                                   navigateToPage(1);
+                                                   updateFilterParam('minPrice', event.target.value);
                                                }}/>
                                     </div>
                                     <div className="p-b-15">
@@ -368,7 +399,7 @@ const Shop = () => {
                                                placeholder="Maximum" value={maxPrice}
                                                onChange={(event) => {
                                                    setMaxPrice(event.target.value);
-                                                   navigateToPage(1);
+                                                   updateFilterParam('maxPrice', event.target.value);
                                                }}/>
                                     </div>
 

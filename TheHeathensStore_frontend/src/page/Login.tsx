@@ -17,7 +17,7 @@ const Login = () => {
         setIsSubmitting(true);
 
         try {
-            await login(createLoginUser(username, password));
+            await login(createLoginUser(username, password, remember));
             navigate("/", {replace: true});
         } catch {
             setErrorMessage("Login failed. Please check your account and password.");
@@ -81,9 +81,9 @@ const Login = () => {
                                         Remember me
                                     </label>
 
-                                    <a href="/forgot-password" className="stext-102 cl1">
-                                        Forgot password?
-                                    </a>
+                                    <Link to="/contact" className="stext-102 cl1">
+                                        Need login help?
+                                    </Link>
                                 </div>
 
                                 {errorMessage && (

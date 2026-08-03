@@ -11,9 +11,10 @@ interface MenuMobileProps {
     favoriteItemCount: number;
     accountName: string;
     isAuthenticated: boolean;
+    hasManagementAccess: boolean;
 }
 
-const MenuMobile = ({setIsCartOpen, setIsFavoriteOpen, setIsSearchOpen, cartItemCount, favoriteItemCount, accountName, isAuthenticated}: MenuMobileProps) => {
+const MenuMobile = ({setIsCartOpen, setIsFavoriteOpen, setIsSearchOpen, cartItemCount, favoriteItemCount, accountName, isAuthenticated, hasManagementAccess}: MenuMobileProps) => {
     const [isOpen, setIsOpen] = useState(false);
     const {pathname} = useLocation();
     return (
@@ -36,7 +37,10 @@ const MenuMobile = ({setIsCartOpen, setIsFavoriteOpen, setIsSearchOpen, cartItem
                     </span>
                     <i className="fa fa-angle-right mobile-account-arrow" aria-hidden="true"/>
                 </Link>
-                <ul>{MAIN_MENU_ITEMS.map((item) => <li key={item.path}><Link className={pathname === item.path ? 'is-active' : ''} to={item.path} onClick={() => setIsOpen(false)}>{item.label}</Link></li>)}</ul>
+                <ul>
+                    {MAIN_MENU_ITEMS.map((item) => <li key={item.path}><Link className={pathname === item.path ? 'is-active' : ''} to={item.path} onClick={() => setIsOpen(false)}>{item.label}</Link></li>)}
+                    {hasManagementAccess && <li><Link className={pathname.startsWith('/admin') ? 'is-active' : ''} to="/admin" onClick={() => setIsOpen(false)}>Management dashboard</Link></li>}
+                </ul>
             </nav>
         </>
     );

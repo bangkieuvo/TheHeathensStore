@@ -23,5 +23,6 @@ public class ProductImage {
     private String imageUrl;
 
     @Column(name = "is_thumbnail")
+    @Builder.Default
     private boolean isThumbnail = false;
 }

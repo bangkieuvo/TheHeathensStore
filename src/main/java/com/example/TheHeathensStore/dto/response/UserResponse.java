@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
 import java.util.UUID;
 
 @Data
@@ -18,4 +19,5 @@ public class UserResponse {
     private String email;
     private String phone;
     private String address;
+    private Set<String> roles;
 }

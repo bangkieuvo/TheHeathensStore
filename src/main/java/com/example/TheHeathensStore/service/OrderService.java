@@ -13,6 +13,7 @@ import com.example.TheHeathensStore.mapper.OrderMapper;
 import com.example.TheHeathensStore.repository.CartItemRepository;
 import com.example.TheHeathensStore.repository.OrderRepository;
 import com.example.TheHeathensStore.repository.ProductRepository;
+import com.example.TheHeathensStore.repository.StoreSettingRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -35,6 +36,7 @@ public class OrderService {
     private final CartItemRepository cartItemRepository;
     private final OrderMapper orderMapper;
     private final CartService cartService;
+    private final StoreSettingRepository storeSettingRepository;
 
     @Transactional
     public OrderResponse createOrder(Long userId, CreateOrderRequest request) {
@@ -163,12 +165,27 @@ public class OrderService {
     }
 
     private BigDecimal calculateShippingFee(BigDecimal itemsTotal, Order.ShippingMethod shippingMethod) {
+        BigDecimal freeThreshold = settingDecimal("shipping.free_threshold", FREE_STANDARD_SHIPPING_THRESHOLD);
+        BigDecimal standardFee = settingDecimal("shipping.standard_fee", STANDARD_SHIPPING_FEE);
+        BigDecimal expressFee = settingDecimal("shipping.express_fee", EXPRESS_SHIPPING_FEE);
         if (shippingMethod == Order.ShippingMethod.EXPRESS) {
-            return EXPRESS_SHIPPING_FEE;
+            return expressFee;
         }
-        return itemsTotal.compareTo(FREE_STANDARD_SHIPPING_THRESHOLD) >= 0
+        return itemsTotal.compareTo(freeThreshold) >= 0
                 ? BigDecimal.ZERO
-                : STANDARD_SHIPPING_FEE;
+                : standardFee;
+    }
+
+    private BigDecimal settingDecimal(String key, BigDecimal fallback) {
+        return storeSettingRepository.findBySettingKey(key)
+                .map(setting -> {
+                    try {
+                        return new BigDecimal(setting.getSettingValue());
+                    } catch (NumberFormatException ignored) {
+                        return fallback;
+                    }
+                })
+                .orElse(fallback);
     }
 
     private Order findOrder(Long userId, UUID orderUuid) {

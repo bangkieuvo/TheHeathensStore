@@ -97,6 +97,9 @@ public class Order {
     @Column(name = "shipping_address", nullable = false, length = 500)
     private String shippingAddress;
 
+    @Column(name = "internal_note", length = 1000)
+    private String internalNote;
+
     @Builder.Default
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("id ASC")

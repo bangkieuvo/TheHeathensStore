@@ -39,10 +39,16 @@ public class AuthenticationService {
         if (!jwtUtil.validateToken(token))
             return null;
         User user = userRepository.findByUsername(jwtUtil.extractUsername(token)).orElse(null);
-        if (user == null){
+        if (user == null || !Boolean.TRUE.equals(user.getIsActive())){
             return null;
         }
-        return userMapper.entityToResponse(user,userInfoRepository.findByUserId(user.getId()).orElse(null));
+        UserResponse response = userMapper.entityToResponse(user, userInfoRepository.findByUserId(user.getId()).orElse(null));
+        Set<String> roles = new HashSet<>();
+        if (adminRepository.existsByUserId(user.getId())) roles.add("ADMIN");
+        if (staffRepository.existsByUserId(user.getId())) roles.add("STAFF");
+        if (roles.isEmpty()) roles.add("USER");
+        response.setRoles(roles);
+        return response;
     }
 
     public String login(UserLoginRequest userLoginRequest) {
@@ -54,13 +60,13 @@ public class AuthenticationService {
                                   .or(() -> userInfoRepository.findByPhone(identifier)
                                                                   .flatMap(info -> userRepository.findById(info.getUserId())))
                                   .orElse(null);
-        if (user == null) {
+        if (user == null || !Boolean.TRUE.equals(user.getIsActive())) {
             throw new InvalidRequestException("Invalid username or password");
         }
         if (!bCryptHasher.isMatch(userLoginRequest.getPassword(), user.getPasswordHash())) {
             throw new InvalidRequestException("Invalid username or password");
         }
-        return jwtUtil.generateToken(user.getUsername());
+        return jwtUtil.generateToken(user.getUsername(), userLoginRequest.isRememberMe());
     }
 
     public UserPrincipal authenticate(String token) {
@@ -69,7 +75,7 @@ public class AuthenticationService {
         String username = jwtUtil.extractUsername(token);
         User user = userRepository.findByUsername(username)
                                   .orElse(null);
-        if (user == null) {
+        if (user == null || !Boolean.TRUE.equals(user.getIsActive())) {
             throw new InvalidRequestException("Invalid username or password");
         }
         Set<String> roles = new HashSet<>();

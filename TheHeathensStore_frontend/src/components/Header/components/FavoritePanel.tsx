@@ -1,66 +1,89 @@
-import type {Favorite} from "../../../types/favorite.ts";
 import {Link} from 'react-router-dom';
+import type {Favorite} from '../../../types/favorite.ts';
+import {NO_IMAGE_AVAILABLE_URL} from '../../../util/constants.ts';
+import QuickPanelShell from './QuickPanelShell.tsx';
 
 interface FavoritePanelProps {
     favorite: Favorite | null;
     isLoggedIn: boolean;
     isFavoriteOpen: boolean;
     setIsFavoriteOpen: (flag: boolean) => void;
+    removeItem: (productUuid: string) => Promise<void>;
+    isItemPending: (productUuid: string) => boolean;
 }
 
-const FavoritePanel: React.FC<FavoritePanelProps> = ({favorite, isLoggedIn, isFavoriteOpen, setIsFavoriteOpen}) => {
+const formatPrice = (price: number) => new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+}).format(price);
+
+const FavoritePanel = ({
+    favorite,
+    isLoggedIn,
+    isFavoriteOpen,
+    setIsFavoriteOpen,
+    removeItem,
+    isItemPending,
+}: FavoritePanelProps) => {
     const favoriteItems = favorite?.favoriteItems ?? [];
-    const hasFavoriteItems = favoriteItems.length > 0;
+    const closePanel = () => setIsFavoriteOpen(false);
+    const footer = isLoggedIn && favoriteItems.length > 0 ? (
+        <Link to="/my-account" className="header-quick-panel-primary" onClick={closePanel}>View saved items</Link>
+    ) : undefined;
 
     return (
-        <div>
-            <div className={`wrap-header-favorite js-panel-favorite ${isFavoriteOpen ? 'show-header-favorite' : ''}`}>
-                <div className="s-full" onClick={() => setIsFavoriteOpen(false)}></div>
-                <div className="header-favorite flex-col-l p-l-65 p-r-25">
-                    <div className="header-favorite-title flex-w flex-sb-m p-b-8">
-                        <span className="mtext-103 cl2">Your Favorite</span>
-                        <div className="fs-35 lh-10 cl2 p-lr-5 pointer hov-cl1 trans-04"
-                             onClick={() => setIsFavoriteOpen(false)}>
-                            <i className="zmdi zmdi-close"></i>
-                        </div>
-                    </div>
-
-                    <div className="header-favorite-content flex-w js-pscroll">
-                        {!isLoggedIn ? (
-                            <div className="header-panel-empty w-full txt-center">
-                                <i className="zmdi zmdi-favorite-outline"></i>
-                                <p className="stext-102 cl6 p-t-15">Please log in to view your favorite items</p>
-                            </div>
-                        ) : hasFavoriteItems ? (
-                            <ul className="header-favorite-wrapitem w-full">
-                                {favoriteItems.map(item => (
-                                    <li key={item.id} className="header-favorite-item flex-w flex-t m-b-12">
-                                        <div className="header-favorite-item-img">
-                                            <img src={item.productInfo.thumbnailUrl} alt="IMG"/>
-                                        </div>
-
-                                        <div className="header-favorite-item-txt p-t-8">
-                                            <Link to={`/product-detail/${item.productInfo.uuid}`}
-                                               onClick={() => setIsFavoriteOpen(false)}
-                                               className="header-favorite-item-name m-b-18 hov-cl1 trans-04">
-                                                {item.productInfo.name}
-                                            </Link>
-                                            <span className="header-favorite-item-info">
-                                                price: {item.productInfo.price}$
-                                            </span>
-                                        </div>
-                                    </li>))}
-                            </ul>
-                        ) : (
-                            <div className="header-panel-empty w-full txt-center">
-                                <i className="zmdi zmdi-favorite-outline"></i>
-                                <p className="stext-102 cl6 p-t-15">Your favorite list is empty.</p>
-                            </div>
-                        )}
-                    </div>
+        <QuickPanelShell
+            isOpen={isFavoriteOpen}
+            title="Favorites"
+            count={favoriteItems.length}
+            iconClassName="zmdi zmdi-favorite-outline"
+            onClose={closePanel}
+            footer={footer}
+        >
+            {!isLoggedIn ? (
+                <div className="header-quick-panel-empty">
+                    <i className="zmdi zmdi-favorite-outline" aria-hidden="true"/>
+                    <h3>Sign in to view favorites</h3>
+                    <p>Keep the jerseys you love in one place.</p>
+                    <Link to="/login" onClick={closePanel}>Sign in</Link>
                 </div>
-            </div>
-        </div>
+            ) : favoriteItems.length > 0 ? (
+                <ul className="header-quick-panel-list">
+                    {favoriteItems.map((item) => (
+                        <li key={item.id} aria-busy={isItemPending(item.productInfo.uuid)}>
+                            <Link className="header-quick-panel-image" to={`/product-detail/${item.productInfo.uuid}`} onClick={closePanel}>
+                                <img src={item.productInfo.thumbnailUrl || NO_IMAGE_AVAILABLE_URL} alt={item.productInfo.name}/>
+                            </Link>
+                            <div className="header-quick-panel-item-copy">
+                                <Link to={`/product-detail/${item.productInfo.uuid}`} onClick={closePanel}>{item.productInfo.name}</Link>
+                                <span>{item.productInfo.teamName} · {item.productInfo.season}</span>
+                                <strong className="header-quick-panel-price">{formatPrice(item.productInfo.price)}</strong>
+                            </div>
+                            <button
+                                type="button"
+                                className="header-quick-panel-remove"
+                                onClick={() => void removeItem(item.productInfo.uuid).catch(() => undefined)}
+                                disabled={isItemPending(item.productInfo.uuid)}
+                                aria-label={`Remove ${item.productInfo.name} from favorites`}
+                            >
+                                {isItemPending(item.productInfo.uuid) ? (
+                                    <span className="header-quick-panel-spinner" aria-hidden="true"/>
+                                ) : (
+                                    <i className="zmdi zmdi-delete" aria-hidden="true"/>
+                                )}
+                            </button>
+                        </li>
+                    ))}
+                </ul>
+            ) : (
+                <div className="header-quick-panel-empty">
+                    <i className="zmdi zmdi-favorite-outline" aria-hidden="true"/>
+                    <h3>No favorites yet</h3>
+                    <p>Tap the heart on a product to save it.</p>
+                    <Link to="/shop" onClick={closePanel}>Browse shop</Link>
+                </div>
+            )}
+        </QuickPanelShell>
     );
 };
 

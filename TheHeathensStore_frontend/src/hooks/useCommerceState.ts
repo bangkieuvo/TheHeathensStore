@@ -92,8 +92,7 @@ export const useCommerceState = (): CommerceState => {
                 }
             } catch (error) {
                 if (isMounted) {
-                    if (axios.isAxiosError(error)
-                        && (error.response?.status === 401 || error.response?.status === 403)) {
+                    if (axios.isAxiosError(error) && error.response?.status === 401) {
                         setUser(null);
                         setCart(null);
                         setFavorite(null);
@@ -120,7 +119,7 @@ export const useCommerceState = (): CommerceState => {
     const clearActionError = useCallback(() => setActionError(''), []);
 
     const handleAuthenticationFailure = useCallback((error: unknown): boolean => {
-        if (!axios.isAxiosError(error) || (error.response?.status !== 401 && error.response?.status !== 403)) {
+        if (!axios.isAxiosError(error) || error.response?.status !== 401) {
             return false;
         }
 
@@ -210,15 +209,22 @@ export const useCommerceState = (): CommerceState => {
         }
         cartPendingRef.current.add(productUuid);
         setCartPendingUuids(new Set(cartPendingRef.current));
-        try {
+
+        const mutation = cartMutationQueueRef.current.then(async () => {
             const updatedCart = await updateCartItem(productUuid, quantity);
             setCart(updatedCart);
             setActionError('');
+        });
+        cartMutationQueueRef.current = mutation.catch(() => undefined);
+
+        try {
+            await mutation;
         } catch (error) {
             if (!handleAuthenticationFailure(error)) {
-                setActionError(getRequestErrorMessage(error, 'Unable to update cart item.'));
+                const message = getRequestErrorMessage(error, 'Unable to update cart item.');
+                setActionError(message);
+                throw new Error(message);
             }
-            throw error;
         } finally {
             cartPendingRef.current.delete(productUuid);
             setCartPendingUuids(new Set(cartPendingRef.current));
@@ -231,15 +237,22 @@ export const useCommerceState = (): CommerceState => {
         }
         cartPendingRef.current.add(productUuid);
         setCartPendingUuids(new Set(cartPendingRef.current));
-        try {
+
+        const mutation = cartMutationQueueRef.current.then(async () => {
             const updatedCart = await deleteCartItem(productUuid);
             setCart(updatedCart);
             setActionError('');
+        });
+        cartMutationQueueRef.current = mutation.catch(() => undefined);
+
+        try {
+            await mutation;
         } catch (error) {
             if (!handleAuthenticationFailure(error)) {
-                setActionError(getRequestErrorMessage(error, 'Unable to remove cart item.'));
+                const message = getRequestErrorMessage(error, 'Unable to remove cart item.');
+                setActionError(message);
+                throw new Error(message);
             }
-            throw error;
         } finally {
             cartPendingRef.current.delete(productUuid);
             setCartPendingUuids(new Set(cartPendingRef.current));

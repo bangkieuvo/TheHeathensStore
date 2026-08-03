@@ -16,6 +16,12 @@ import java.util.UUID;
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
     @EntityGraph(attributePaths = {"items"})
+    List<Order> findAllByOrderByCreatedAtDesc();
+
+    @EntityGraph(attributePaths = {"items"})
+    Optional<Order> findByUuid(UUID uuid);
+
+    @EntityGraph(attributePaths = {"items"})
     List<Order> findByUserIdOrderByCreatedAtDesc(Long userId);
 
     @EntityGraph(attributePaths = {"items"})
