@@ -17,10 +17,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.LinkedHashMap;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,7 +41,8 @@ public class CartService {
         Map<Long, ProductImage> productThumbnails = productImageRepository.findAllByProductIdInAndIsThumbnailTrue(productIds)
                                                                           .stream()
                                                                           .collect(Collectors
-                                                                                  .toMap(ProductImage::getProductId, productImage -> productImage)
+                                                                                  .toMap(productImage -> productImage.getProduct()
+                                                                                                                     .getId(), productImage -> productImage)
                                                                           );
 
         List<CartItemResponse> cartItemResponses = cartItems.stream()
@@ -114,10 +115,10 @@ public class CartService {
             }
             CartItem cartItem = cartItemRepository.findByUserIdAndProductId(userId, product.getId())
                                                   .orElseGet(() -> CartItem.builder()
-                                                                          .userId(userId)
-                                                                          .product(product)
-                                                                          .quantity(0L)
-                                                                          .build());
+                                                                           .userId(userId)
+                                                                           .product(product)
+                                                                           .quantity(0L)
+                                                                           .build());
             long newQuantity;
             try {
                 newQuantity = Math.addExact(cartItem.getQuantity(), quantity);

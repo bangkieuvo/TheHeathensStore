@@ -1,12 +1,6 @@
 package com.example.TheHeathensStore.controller.api.demo;
 
-import com.example.TheHeathensStore.dto.request.AdminCustomerStatusRequest;
-import com.example.TheHeathensStore.dto.request.AdminOrderUpdateRequest;
-import com.example.TheHeathensStore.dto.request.AdminProductRequest;
-import com.example.TheHeathensStore.dto.request.AdminStockRequest;
-import com.example.TheHeathensStore.dto.request.StoreSettingRequest;
-import com.example.TheHeathensStore.dto.request.AdminRecordRequest;
-import com.example.TheHeathensStore.dto.request.AdminStaffRequest;
+import com.example.TheHeathensStore.dto.request.*;
 import com.example.TheHeathensStore.dto.wrapper.ApiResponse;
 import com.example.TheHeathensStore.service.AdminService;
 import com.example.TheHeathensStore.service.ProductService;
@@ -16,20 +10,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -58,7 +42,8 @@ public class AdminController {
 
     @PostMapping("/products")
     public ResponseEntity<ApiResponse<Map<String, Object>>> createProduct(@Valid @RequestBody AdminProductRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.of(201, "Product created", true, adminService.createProduct(request)));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                             .body(ApiResponse.of(201, "Product created", true, adminService.createProduct(request)));
     }
 
     @PutMapping("/products/{uuid}")
@@ -84,15 +69,15 @@ public class AdminController {
     ) throws IOException {
         List<Map<?, ?>> images = productService.uploadImage(uuid, mainImage, subImages);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.of(201, "Product images uploaded", true, images));
+                             .body(ApiResponse.of(201, "Product images uploaded", true, images));
     }
 
     @GetMapping(value = "/products/export", produces = "text/csv")
     public ResponseEntity<String> exportProducts() {
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=products.csv")
-                .contentType(MediaType.parseMediaType("text/csv"))
-                .body(adminService.exportProductsCsv());
+                             .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=products.csv")
+                             .contentType(MediaType.parseMediaType("text/csv"))
+                             .body(adminService.exportProductsCsv());
     }
 
     @GetMapping("/orders")
@@ -132,11 +117,14 @@ public class AdminController {
     }
 
     @GetMapping("/records")
-    public ApiResponse<List<Map<String, Object>>> records() { return ApiResponse.success(adminService.getRecords()); }
+    public ApiResponse<List<Map<String, Object>>> records() {
+        return ApiResponse.success(adminService.getRecords());
+    }
 
     @PostMapping("/records")
     public ResponseEntity<ApiResponse<Map<String, Object>>> createRecord(@Valid @RequestBody AdminRecordRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.of(201, "Record created", true, adminService.saveRecord(null, request)));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                             .body(ApiResponse.of(201, "Record created", true, adminService.saveRecord(null, request)));
     }
 
     @PutMapping("/records/{uuid}")
@@ -145,7 +133,10 @@ public class AdminController {
     }
 
     @DeleteMapping("/records/{uuid}")
-    public ApiResponse<Void> deleteRecord(@PathVariable UUID uuid) { adminService.deleteRecord(uuid); return ApiResponse.success("Record deleted", null); }
+    public ApiResponse<Void> deleteRecord(@PathVariable UUID uuid) {
+        adminService.deleteRecord(uuid);
+        return ApiResponse.success("Record deleted", null);
+    }
 
     @GetMapping("/staff")
     public ApiResponse<List<Map<String, Object>>> staffMembers() {
@@ -155,7 +146,7 @@ public class AdminController {
     @PostMapping("/staff")
     public ResponseEntity<ApiResponse<Map<String, Object>>> addStaffMember(@Valid @RequestBody AdminStaffRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.of(201, "Staff member added", true, adminService.addStaffMember(request)));
+                             .body(ApiResponse.of(201, "Staff member added", true, adminService.addStaffMember(request)));
     }
 
     @DeleteMapping("/staff/{userUuid}")

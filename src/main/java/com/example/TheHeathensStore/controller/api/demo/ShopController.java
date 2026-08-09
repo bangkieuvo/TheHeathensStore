@@ -3,6 +3,7 @@ package com.example.TheHeathensStore.controller.api.demo;
 import com.example.TheHeathensStore.dto.response.ProductResponse;
 import com.example.TheHeathensStore.dto.wrapper.ApiResponse;
 import com.example.TheHeathensStore.filter.ProductFilter;
+import com.example.TheHeathensStore.service.ProductService;
 import com.example.TheHeathensStore.service.ShopService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,6 +18,7 @@ import java.util.UUID;
 @RequestMapping("${API_URL}/public/products")
 public class ShopController {
     private final ShopService shopService;
+    private final ProductService productService;
 
     @GetMapping
     public ResponseEntity<ApiResponse<Page<ProductResponse>>> getProducts
@@ -47,7 +49,7 @@ public class ShopController {
 
     @GetMapping("/{uuid}")
     public ResponseEntity<ApiResponse<ProductResponse>> getProduct(@PathVariable UUID uuid) {
-        return ResponseEntity.ok(ApiResponse.success(shopService.getProduct(uuid)));
+        return ResponseEntity.ok(ApiResponse.success(productService.getProductByUuid(uuid)));
     }
 
     @GetMapping("/{uuid}/related")

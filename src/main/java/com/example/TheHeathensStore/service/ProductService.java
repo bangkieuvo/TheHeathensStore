@@ -4,8 +4,8 @@ import com.example.TheHeathensStore.dto.response.ProductResponse;
 import com.example.TheHeathensStore.dto.response.ProductResponseMin;
 import com.example.TheHeathensStore.entity.Product;
 import com.example.TheHeathensStore.entity.ProductImage;
-import com.example.TheHeathensStore.mapper.ProductMapper;
 import com.example.TheHeathensStore.exception.InvalidRequestException;
+import com.example.TheHeathensStore.mapper.ProductMapper;
 import com.example.TheHeathensStore.repository.ProductImageRepository;
 import com.example.TheHeathensStore.repository.ProductRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -45,7 +45,8 @@ public class ProductService {
                                         .toList();
         Map<Long, ProductImage> thumbnails = productImageRepository.findAllByProductIdInAndIsThumbnailTrue(productIds)
                                                                    .stream()
-                                                                   .collect(Collectors.toMap(ProductImage::getProductId, productImage -> productImage));
+                                                                   .collect(Collectors.toMap(productImage -> productImage.getProduct()
+                                                                                                                         .getId(), productImage -> productImage));
         return products.stream()
                        .map(product -> productMapper.entityToProductResponseMin(product, thumbnails.get(product.getId())))
                        .toList();
@@ -60,17 +61,20 @@ public class ProductService {
         Map<?, ?> result;
         Product product = productRepository.findByUuid(productUuid)
                                            .orElseThrow(() -> new EntityNotFoundException("Không tìm thấy sản phẩm với UUID: " + productUuid.toString()));
-        String teamName = product.getTeam() == null ? "unassigned-team" : product.getTeam().getName();
-        String seasonName = product.getSeason() == null ? "unassigned-season" : product.getSeason().getName();
+        String teamName = product.getTeam() == null ? "unassigned-team" : product.getTeam()
+                                                                                 .getName();
+        String seasonName = product.getSeason() == null ? "unassigned-season" : product.getSeason()
+                                                                                       .getName();
         String folderUrl = teamName + "/" + seasonName + "/" + product.getJerseyType();
-        List<ProductImage> currentThumbnails = productImageRepository.findByProductId(product.getId()).stream()
-                .filter(ProductImage::isThumbnail)
-                .peek(image -> image.setThumbnail(false))
-                .toList();
+        List<ProductImage> currentThumbnails = productImageRepository.findByProductId(product.getId())
+                                                                     .stream()
+                                                                     .filter(ProductImage::isThumbnail)
+                                                                     .peek(image -> image.setThumbnail(false))
+                                                                     .toList();
         productImageRepository.saveAll(currentThumbnails);
         result = cloudinaryService.upload(thumbnail, folderUrl);
         ProductImage productImage = ProductImage.builder()
-                                                .productId(product.getId())
+                                                .product(product)
                                                 .imageUrl((result.get("secure_url")).toString())
                                                 .isThumbnail(true)
                                                 .build();
@@ -81,7 +85,7 @@ public class ProductService {
             if (img == null || img.isEmpty()) continue;
             result = cloudinaryService.upload(img, folderUrl);
             productImage = ProductImage.builder()
-                                       .productId(product.getId())
+                                       .product(product)
                                        .imageUrl(result.get("secure_url")
                                                        .toString())
                                        .isThumbnail(false)

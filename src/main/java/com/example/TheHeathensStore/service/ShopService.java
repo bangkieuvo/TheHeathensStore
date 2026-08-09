@@ -30,24 +30,19 @@ public class ShopService {
     private final ProductMapper productMapper;
     private final ProductImageRepository productImageRepository;
 
-    public Page<ProductResponse> getShop(int pageIndex) {
-        if (pageIndex < 0) {
-            throw new InvalidRequestException("Invalid page number");
-        }
-        Pageable pageable = PageRequest.of(pageIndex, DEFAULT_PAGE_SIZE);
-        return productRepository.findByIsActiveTrue(pageable)
-                                .map(product -> productMapper.entityToResponse(
-                                        product,
-                                        productImageRepository.findByProductId(
-                                                product.getId()
-                                        )
-                                ));
-    }
-
-    public Page<ProductResponse> getShopWithFilter(int pageIndex, ProductFilter productFilter, String sort) {
-        return getShopWithFilter(pageIndex, DEFAULT_PAGE_SIZE, productFilter, sort);
-    }
-
+    //    public Page<ProductResponse> getShop(int pageIndex) {
+//        if (pageIndex < 0) {
+//            throw new InvalidRequestException("Invalid page number");
+//        }
+//        Pageable pageable = PageRequest.of(pageIndex, DEFAULT_PAGE_SIZE);
+//        return productRepository.findByIsActiveTrue(pageable)
+//                                .map(product -> productMapper.entityToResponse(
+//                                        product,
+//                                        productImageRepository.findByProductId(
+//                                                product.getId()
+//                                        )
+//                                ));
+//    }
     public Page<ProductResponse> getShopWithFilter(
             int pageIndex,
             int pageSize,
@@ -62,43 +57,36 @@ public class ShopService {
         }
         validateFilter(productFilter);
         Pageable pageable = PageRequest.of(pageIndex, pageSize, ProductSort.fromValue(sort)
-                                                                             .toSort());
+                                                                           .toSort());
         Specification<Product> specification = ProductSpecification.filterProduct(productFilter);
         return productRepository.findAll(specification, pageable)
-                                .map(this::toResponse);
+                                .map(product -> productMapper.entityToResponse(product, product.getImages()));
     }
 
     public List<ProductResponse> getFeatureProducts() {
         return productRepository.findByIsActiveTrue(PageRequest.of(0, 8, ProductSort.NEWEST.toSort()))
                                 .stream()
-                                .map(this::toResponse)
+                                .map(product -> productMapper.entityToResponse(product, product.getImages()))
                                 .toList();
     }
 
-    public ProductResponse getProduct(UUID uuid) {
-        Product product = productRepository.findActiveByUuid(uuid)
-                                           .orElseThrow(() -> new ResourceNotFoundException(
-                                                   "Product " + uuid + " was not found"
-                                           ));
-        return toResponse(product);
-    }
-
-    public List<ProductResponse> getRelatedProducts(UUID uuid) {
-        Product product = productRepository.findActiveByUuid(uuid)
-                                           .orElseThrow(() -> new ResourceNotFoundException(
-                                                   "Product " + uuid + " was not found"
-                                           ));
-        if (product.getTeam() == null) {
-            return List.of();
-        }
-        return productRepository.findTop4ByIsActiveTrueAndTeam_IdAndUuidNotOrderByCreatedAtDesc(
-                                        product.getTeam().getId(),
-                                        uuid
-                                )
-                                .stream()
-                                .map(this::toResponse)
-                                .toList();
-    }
+//    public List<ProductResponse> getRelatedProducts(UUID uuid) {
+//        Product product = productRepository.findActiveByUuid(uuid)
+//                                           .orElseThrow(() -> new ResourceNotFoundException(
+//                                                   "Product " + uuid + " was not found"
+//                                           ));
+//        if (product.getTeam() == null) {
+//            return List.of();
+//        }
+//        return productRepository.findTop4ByIsActiveTrueAndTeam_IdAndUuidNotOrderByCreatedAtDesc(
+//                                        product.getTeam()
+//                                               .getId(),
+//                                        uuid
+//                                )
+//                                .stream()
+//                                .map(product1 ->  productMapper.entityToResponse(product1, product1.getImages()))
+//                                .toList();
+//    }
 
     public List<ProductResponse> getSuggestions(String keyword, int limit) {
         if (keyword == null || keyword.isBlank()) {
@@ -112,25 +100,25 @@ public class ShopService {
         return getShopWithFilter(0, limit, filter, "best_selling").getContent();
     }
 
-    private ProductResponse toResponse(Product product) {
-        return productMapper.entityToResponse(
-                product,
-                productImageRepository.findByProductId(product.getId())
-        );
-    }
 
     private void validateFilter(ProductFilter filter) {
-        if (filter.getMinPrice() != null && filter.getMinPrice().signum() < 0
-                || filter.getMaxPrice() != null && filter.getMaxPrice().signum() < 0) {
+        if (filter.getMinPrice() != null && filter.getMinPrice()
+                                                  .signum() < 0
+                || filter.getMaxPrice() != null && filter.getMaxPrice()
+                                                         .signum() < 0) {
             throw new InvalidRequestException("Product price filter cannot be negative");
         }
         if (filter.getMinPrice() != null && filter.getMaxPrice() != null
-                && filter.getMinPrice().compareTo(filter.getMaxPrice()) > 0) {
+                && filter.getMinPrice()
+                         .compareTo(filter.getMaxPrice()) > 0) {
             throw new InvalidRequestException("Minimum price cannot be greater than maximum price");
         }
-        if (filter.getJerseyType() != null && !filter.getJerseyType().isBlank()) {
+        if (filter.getJerseyType() != null && !filter.getJerseyType()
+                                                     .isBlank()) {
             try {
-                Product.JerseyType.valueOf(filter.getJerseyType().trim().toLowerCase(Locale.ROOT));
+                Product.JerseyType.valueOf(filter.getJerseyType()
+                                                 .trim()
+                                                 .toLowerCase(Locale.ROOT));
             } catch (IllegalArgumentException exception) {
                 throw new InvalidRequestException("Invalid jersey type", exception);
             }

@@ -38,7 +38,8 @@ public class FavoriteService {
         Map<Long, ProductImage> productThumbnails = productImageRepository.findAllByProductIdInAndIsThumbnailTrue(productIds)
                                                                           .stream()
                                                                           .collect(Collectors
-                                                                                  .toMap(ProductImage::getProductId, productImage -> productImage)
+                                                                                  .toMap(productImage -> productImage.getProduct()
+                                                                                                                     .getId(), productImage -> productImage)
                                                                           );
 
         List<FavoriteItemResponse> favoriteItemResponses = favoriteItems.stream()
@@ -61,7 +62,7 @@ public class FavoriteService {
         }
         Product product = findProduct(productUuid);
         FavoriteItem favoriteItem = favoriteItemRepository.findByUserIdAndProductId(userId, product.getId())
-                                                           .orElse(null);
+                                                          .orElse(null);
         if (favoriteItem == null) {
             favoriteItem = FavoriteItem.builder()
                                        .userId(userId)
@@ -79,9 +80,9 @@ public class FavoriteService {
         }
         Product product = findProduct(productUuid);
         FavoriteItem favoriteItem = favoriteItemRepository.findByUserIdAndProductId(userId, product.getId())
-                                                           .orElseThrow(() -> new ResourceNotFoundException(
-                                                                   "Product " + productUuid + " is not in favorite"
-                                                           ));
+                                                          .orElseThrow(() -> new ResourceNotFoundException(
+                                                                  "Product " + productUuid + " is not in favorite"
+                                                          ));
         favoriteItemRepository.delete(favoriteItem);
         return getFavorites(userId, userUuid);
     }
