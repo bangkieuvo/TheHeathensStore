@@ -52,8 +52,8 @@ public class ShopController {
         return ResponseEntity.ok(ApiResponse.success(productService.getProductByUuid(uuid)));
     }
 
-    @GetMapping("/{uuid}/related")
-    public ResponseEntity<ApiResponse<List<ProductResponse>>> getRelatedProducts(@PathVariable UUID uuid) {
-        return ResponseEntity.ok(ApiResponse.success(shopService.getRelatedProducts(uuid)));
-    }
+//    @GetMapping("/{uuid}/related")
+//    public ResponseEntity<ApiResponse<List<ProductResponse>>> getRelatedProducts(@PathVariable UUID uuid) {
+//        return ResponseEntity.ok(ApiResponse.success(shopService.getRelatedProducts(uuid)));
+//    }
 }
